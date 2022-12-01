@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/browser"
 
-	"oss.terrastruct.com/xos"
+	"oss.terrastruct.com/util-go/xos"
 )
 
 func Open(ctx context.Context, env *xos.Env, url string) error {
