@@ -26,6 +26,7 @@ own repo from this collection we will. Feel free to open an issue to request.
 - <a href="#xbrowser" id="toc-xbrowser">./xbrowser</a>
 - <a href="#xexec" id="toc-xexec">./xexec</a>
 - <a href="#xhttp" id="toc-xhttp">./xhttp</a>
+- <a href="#xmain" id="toc-xmain">./xmain</a>
 
 ## Package Index
 
@@ -90,3 +91,7 @@ xexec provides exec helpers.
 ### [./xhttp](./xhttp)
 
 xhttp provides HTTP helpers.
+
+### [./xmain](./xmain)
+
+xmain implements helpers for building CLI tools.
