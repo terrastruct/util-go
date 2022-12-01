@@ -24,7 +24,7 @@ func Error(tb testing.TB, err error) {
 	}
 }
 
-func ErrorContainsfunc(tb testing.TB, err error, msg string) {
+func ErrorContains(tb testing.TB, err error, msg string) {
 	tb.Helper()
 	if err == nil {
 		tb.Fatalf("expected error containing %q", msg)
