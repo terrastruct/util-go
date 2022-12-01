@@ -12,18 +12,16 @@ If there's enough external demand for a single package to be split off into its
 own repo from this collection we will. Feel free to open an issue to request.
 
 <!-- toc -->
-
-* [assert](#assert)
-* [diff](#diff)
-* [xdefer](#xdefer)
-* [cmdlog](#cmdlog)
-* [xos](#xos)
-* [xrand](#xrand)
-* [xcontext](#xcontext)
-* [xjson](#xjson)
-* [xfmt](#xfmt)
-
-<!-- tocstop -->
+- <a href="#assert" id="toc-assert">assert</a>
+- <a href="#diff" id="toc-diff">diff</a>
+- <a href="#xdefer" id="toc-xdefer">xdefer</a>
+- <a href="#cmdlog" id="toc-cmdlog">cmdlog</a>
+- <a href="#xterm" id="toc-xterm">xterm</a>
+- <a href="#xos" id="toc-xos">xos</a>
+- <a href="#xrand" id="toc-xrand">xrand</a>
+- <a href="#xcontext" id="toc-xcontext">xcontext</a>
+- <a href="#xjson" id="toc-xjson">xjson</a>
+- <a href="#xfmt" id="toc-xfmt">xfmt</a>
 
 ## Package Index
 
@@ -47,6 +45,10 @@ xdefer annotates all errors returned from a function transparently.
 ### [cmdlog](./cmdlog)
 
 cmdlog implements color leveled logging for command line tools.
+
+### [xterm](./xterm)
+
+xterm implements outputting formatted text to a terminal.
 
 ### [xos](./xos)
 

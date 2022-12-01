@@ -10,8 +10,13 @@ cd "$(dirname "$0")"
 
 sh_c detect_changed_files
 
+fmt() {
+  tocsubst --skip 2 README.md
+  ci_go_fmt
+}
+
 job_parseflags "$@"
-runjob fmt ci_go_fmt &
+runjob fmt fmt &
 runjob lint ci_go_lint &
 runjob build ci_go_build &
 runjob test ci_go_test &
