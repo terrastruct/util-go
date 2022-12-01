@@ -2,6 +2,7 @@ package xos
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -77,4 +78,11 @@ func (e *Env) Bool(name string) (*bool, error) {
 		return eb, nil
 	}
 	return nil, fmt.Errorf("$%s must be 0, 1, false or true but got %q", name, ev)
+}
+
+func (e *Env) HumanPath(fp string) string {
+	if strings.HasPrefix(fp, e.Getenv("HOME")) {
+		return filepath.Join("~", strings.TrimPrefix(fp, e.Getenv("HOME")))
+	}
+	return fp
 }
