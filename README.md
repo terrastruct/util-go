@@ -12,16 +12,16 @@ If there's enough external demand for a single package to be split off into its
 own repo from this collection we will. Feel free to open an issue to request.
 
 <!-- toc -->
--   [assert](#assert){#toc-assert}
--   [diff](#diff){#toc-diff}
--   [xdefer](#xdefer){#toc-xdefer}
--   [cmdlog](#cmdlog){#toc-cmdlog}
--   [xterm](#xterm){#toc-xterm}
--   [xos](#xos){#toc-xos}
--   [xrand](#xrand){#toc-xrand}
--   [xcontext](#xcontext){#toc-xcontext}
--   [xjson](#xjson){#toc-xjson}
--   [xfmt](#xfmt){#toc-xfmt}
+- <a href="#assert" id="toc-assert">assert</a>
+- <a href="#diff" id="toc-diff">diff</a>
+- <a href="#xdefer" id="toc-xdefer">xdefer</a>
+- <a href="#cmdlog" id="toc-cmdlog">cmdlog</a>
+- <a href="#xterm" id="toc-xterm">xterm</a>
+- <a href="#xos" id="toc-xos">xos</a>
+- <a href="#xrand" id="toc-xrand">xrand</a>
+- <a href="#xcontext" id="toc-xcontext">xcontext</a>
+- <a href="#xjson" id="toc-xjson">xjson</a>
+- <a href="#xfmt" id="toc-xfmt">xfmt</a>
 
 ## Package Index
 

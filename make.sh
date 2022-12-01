@@ -11,10 +11,7 @@ cd "$(dirname "$0")"
 sh_c detect_changed_files
 
 fmt() {
-  if [ -n "${CI-}" ]; then
-    sudo apt install -y pandoc
-  fi
-  tocsubst --skip 2 README.md
+  sh_c tocsubst --skip 2 README.md
   ci_go_fmt
 }
 
