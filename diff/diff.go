@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"oss.terrastruct.com/xdefer"
+	"oss.terrastruct.com/utils-go/xdefer"
 
 	"oss.terrastruct.com/utils-go/xjson"
 )
