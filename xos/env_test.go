@@ -67,5 +67,5 @@ func TestBool(t *testing.T) {
 	env.Setenv("MY_BOOL", "TRUE")
 	eb, err = env.Bool("MY_BOOL")
 	assert.Error(t, err)
-	assert.ErrorContains(t, err, `$MY_BOOL must be 0, 1, false or true but got "TRUE"`)
+	assert.ErrorString(t, err, `$MY_BOOL must be 0, 1, false or true but got "TRUE"`)
 }

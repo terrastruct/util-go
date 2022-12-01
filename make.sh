@@ -11,7 +11,9 @@ cd "$(dirname "$0")"
 sh_c detect_changed_files
 
 fmt() {
-  sh_c tocsubst --skip 2 README.md
+  if is_changed README.md; then
+    sh_c tocsubst --skip 2 README.md
+  fi
   ci_go_fmt
 }
 
