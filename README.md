@@ -71,7 +71,3 @@ xcontext implements indispensable context helpers.
 ### [./xjson](./xjson)
 
 xjson implements basic JSON helpers.
-
-### [./xfmt](./xfmt)
-
-xfmt provides formatting helpers.
