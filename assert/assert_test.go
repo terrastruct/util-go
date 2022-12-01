@@ -3,7 +3,7 @@ package assert_test
 import (
 	"testing"
 
-	"oss.terrastruct.com/xjson"
+	"oss.terrastruct.com/utils-go/xjson"
 
 	"oss.terrastruct.com/utils-go/assert"
 )

@@ -2,5 +2,3 @@ golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 h1:H2TDz8ibqkAF6YGhCdN3j
 golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2/go.mod h1:K8+ghG5WaK9qNqU5K3HdILfMLy1f3aNYFI/wnl100a8=
 oss.terrastruct.com/xdefer v0.0.0-20221017222355-6f3b6e4d1557 h1:rPbhJbN1q7B4tnppSPoAMwq0t6Pk5SrQDQ5S6uoNNHg=
 oss.terrastruct.com/xdefer v0.0.0-20221017222355-6f3b6e4d1557/go.mod h1:plvfydF5METAlsbpeuSz44jckaOwrCWX3M0kTLoCA4I=
-oss.terrastruct.com/xjson v0.0.0-20221018000420-4986731c4c4a h1:AAcupsjBwpbcyLASX0ppDlxbfHWb5Neq5gWdGpLfaSA=
-oss.terrastruct.com/xjson v0.0.0-20221018000420-4986731c4c4a/go.mod h1:XJ71qiTzk/dbTWuYbuLJuRpBdKFN06Sk5FdFpq2TNmE=

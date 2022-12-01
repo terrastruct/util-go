@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/xjson"
+	"oss.terrastruct.com/utils-go/xjson"
 
 	"oss.terrastruct.com/utils-go/diff"
 )
