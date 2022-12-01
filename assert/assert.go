@@ -2,6 +2,7 @@
 package assert
 
 import (
+	"io"
 	"path/filepath"
 	"testing"
 
@@ -60,4 +61,11 @@ func Runes(tb testing.TB, exp, got string) {
 func Testdata(tb testing.TB, got interface{}) {
 	err := diff.Testdata(filepath.Join("testdata", tb.Name()), got)
 	Success(tb, err)
+}
+
+func Close(t *testing.T, c io.Closer) {
+	err := c.Close()
+	if err != nil {
+		t.Fatalf("failed to close %T: %v", c, err)
+	}
 }
