@@ -25,6 +25,7 @@ own repo from this collection we will. Feel free to open an issue to request.
 - <a href="#go2" id="toc-go2">./go2</a>
 - <a href="#xbrowser" id="toc-xbrowser">./xbrowser</a>
 - <a href="#xexec" id="toc-xexec">./xexec</a>
+- <a href="#xhttp" id="toc-xhttp">./xhttp</a>
 
 ## Package Index
 
@@ -85,3 +86,7 @@ xbrowser enables opening a user's GUI browser to a URL.
 ### [./xexec](./xexec)
 
 xexec provides exec helpers.
+
+### [./xhttp](./xhttp)
+
+xhttp provides HTTP helpers.
