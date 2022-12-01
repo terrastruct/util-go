@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
-if [ ! -e "$(dirname "$0")/ci/sub/.git" ]; then
+if [ ! -e "$(dirname "$0")/ci/.git" ]; then
   set -x
   git submodule update --init
   set +x
 fi
-. "$(dirname "$0")/ci/sub/lib.sh"
+. "$(dirname "$0")/ci/lib.sh"
 cd "$(dirname "$0")"
 
 sh_c detect_changed_files
