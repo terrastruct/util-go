@@ -119,7 +119,6 @@ func Log(clog *cmdlog.Logger, next http.Handler) http.Handler {
 			statusLogger = clog.Error
 		}
 		lengthStr := englishPrinter.Sprint(rw.length)
-		// TODO: make work with watch.go on hijack, not after
 		statusLogger.Printf("%s %s %d %sB %v", r.Method, r.URL, rw.status, lengthStr, dur)
 	})
 }
