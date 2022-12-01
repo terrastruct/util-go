@@ -8,7 +8,7 @@ import (
 	"oss.terrastruct.com/utils-go/assert"
 )
 
-func TestJSON(t *testing.T) {
+func TestStringJSON(t *testing.T) {
 	t.Parallel()
 
 	gen := func() (m1, m2 map[string]interface{}) {
@@ -49,7 +49,7 @@ func TestJSON(t *testing.T) {
 		t.Parallel()
 
 		m1, m2 := gen()
-		assert.JSON(t, xjson.MarshalIndent(m1), m2)
+		assert.StringJSON(t, xjson.MarshalIndent(m1), m2)
 	})
 
 	t.Run("diff", func(t *testing.T) {
@@ -74,10 +74,10 @@ func TestJSON(t *testing.T) {
 
 		defer func() {
 			if t.Failed() || !fataledWithDiff {
-				t.Error("expected assert.JSON to fatal with correct diff")
+				t.Error("expected assert.StringJSON to fatal with correct diff")
 			}
 		}()
-		assert.JSON(ftb, xjson.MarshalIndent(m1), m2)
+		assert.StringJSON(ftb, xjson.MarshalIndent(m1), m2)
 	})
 }
 

@@ -5,37 +5,59 @@ import (
 	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/diff"
 	"oss.terrastruct.com/xjson"
+
+	"oss.terrastruct.com/utils-go/diff"
 )
 
-func Success(t testing.TB, err error) {
-	t.Helper()
+func Success(tb testing.TB, err error) {
+	tb.Helper()
 	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+		tb.Fatalf("unexpected error: %v", err)
 	}
 }
 
-func JSON(t testing.TB, exp string, got interface{}) {
-	t.Helper()
-	String(t, exp, xjson.MarshalIndent(got))
+func Error(tb testing.TB, err error) {
+	tb.Helper()
+	if err == nil {
+		tb.Fatal("expected error")
+	}
 }
 
-func String(t testing.TB, exp, got string) {
-	t.Helper()
-	if exp == got {
-		return
+func ErrorContainsfunc(tb testing.TB, err error, msg string) {
+	tb.Helper()
+	if err == nil {
+		tb.Fatalf("expected error containing %q", msg)
 	}
+	String(tb, msg, err.Error())
+}
+
+func JSON(tb testing.TB, exp, got interface{}) {
+	tb.Helper()
+	String(tb, xjson.MarshalIndent(exp), xjson.MarshalIndent(got))
+}
+
+func StringJSON(tb testing.TB, exp string, got interface{}) {
+	tb.Helper()
+	String(tb, exp, xjson.MarshalIndent(got))
+}
+
+func String(tb testing.TB, exp, got string) {
+	tb.Helper()
 	diff, err := diff.Strings(exp, got)
-	if err != nil {
-		t.Fatal(err)
-	}
+	Success(tb, err)
 	if diff != "" {
-		t.Fatalf("\n%s", diff)
+		tb.Fatalf("\n%s", diff)
 	}
 }
 
-func Testdata(t testing.TB, got interface{}) {
-	err := diff.Testdata(filepath.Join("testdata", t.Name()), got)
-	Success(t, err)
+func Runes(tb testing.TB, exp, got string) {
+	tb.Helper()
+	err := diff.Runes(exp, got)
+	Success(tb, err)
+}
+
+func Testdata(tb testing.TB, got interface{}) {
+	err := diff.Testdata(filepath.Join("testdata", tb.Name()), got)
+	Success(tb, err)
 }

@@ -5,7 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/diff"
+	"oss.terrastruct.com/utils-go/assert"
+	"oss.terrastruct.com/utils-go/diff"
 )
 
 //lint:file-ignore ST1018 ignore staticcheck string literal with Unicode control characters
@@ -32,13 +33,11 @@ func TestTestData(t *testing.T) {
 
 	err := os.Remove("testdata/TestTestData.exp.json")
 	if err != nil && !os.IsNotExist(err) {
-		t.Fatal(err)
+		t.Fatalf("unexpected error: %v", err)
 	}
 
 	err = diff.Testdata(filepath.Join("testdata", t.Name()), m1)
-	if err == nil {
-		t.Fatalf("expected error: %#v", err)
-	}
+	assert.Error(t, err)
 	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
 [1m--- /dev/null[m
 [1m+++ b/testdata/TestTestData.got.json[m
@@ -63,7 +62,7 @@ func TestTestData(t *testing.T) {
 		t.Fatalf("unable to generate exp diff: %v", err)
 	}
 	if ds != "" {
-		t.Fatalf("expected correct diff:\n%s", ds)
+		t.Fatalf("expected no diff:\n%s", ds)
 	}
 	err = diff.Runes(exp, got)
 	if err != nil {
@@ -71,9 +70,7 @@ func TestTestData(t *testing.T) {
 	}
 
 	err = os.Rename("testdata/TestTestData.got.json", "testdata/TestTestData.exp.json")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 
 	m1["five"].(map[string]interface{})["five"].(map[string]interface{})["no"] = "ys"
 
@@ -95,25 +92,19 @@ func TestTestData(t *testing.T) {
  [m    "no": "yes",[m`
 	got = err.Error()
 	ds, err = diff.Strings(exp, got)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 	if ds != "" {
-		t.Fatalf("expected correct diff:\n%s", ds)
+		t.Fatalf("expected no diff:\n%s", ds)
 	}
 
 	exp += "a"
 	ds, err = diff.Strings(exp, got)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 	if ds == "" {
 		t.Fatalf("expected incorrect diff:\n%s", ds)
 	}
 	err = diff.Runes(exp, got)
-	if err == nil {
-		t.Fatal(err)
-	}
+	assert.Error(t, err)
 }
 
 func testTestDataAccept(t *testing.T) {
@@ -123,17 +114,13 @@ func testTestDataAccept(t *testing.T) {
 
 	os.Setenv("TESTDATA_ACCEPT", "1")
 	err := diff.Testdata(filepath.Join("testdata", t.Name()), m1)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 
 	m1["one"] = 2
 
 	os.Setenv("TESTDATA_ACCEPT", "")
 	err = diff.Testdata(filepath.Join("testdata", t.Name()), m1)
-	if err == nil {
-		t.Fatalf("expected error: %#v", err)
-	}
+	assert.Error(t, err)
 	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
 [1m--- a/testdata/TestTestData/TESTDATA_ACCEPT.exp.json[m
 [1m+++ b/testdata/TestTestData/TESTDATA_ACCEPT.got.json[m
@@ -143,15 +130,11 @@ func testTestDataAccept(t *testing.T) {
 [32m+[m[32m  "one": 2[m
  [m}[m`
 	ds, err := diff.Strings(exp, err.Error())
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 	if ds != "" {
-		t.Fatalf("expected correct diff:\n%s", ds)
+		t.Fatalf("expected no diff:\n%s", ds)
 	}
 
 	err = os.Remove(filepath.Join("testdata", t.Name()) + ".got.json")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Success(t, err)
 }
