@@ -2,13 +2,14 @@
 package assert
 
 import (
+	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/xjson"
 	"oss.terrastruct.com/diff"
+	"oss.terrastruct.com/xjson"
 )
 
-func Success(t *testing.T, err error) {
+func Success(t testing.TB, err error) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -32,4 +33,9 @@ func String(t testing.TB, exp, got string) {
 	if diff != "" {
 		t.Fatalf("\n%s", diff)
 	}
+}
+
+func Testdata(t testing.TB, got interface{}) {
+	err := diff.Testdata(filepath.Join("testdata", t.Name()), got)
+	Success(t, err)
 }

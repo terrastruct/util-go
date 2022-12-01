@@ -1,0 +1,14 @@
+{
+  "five": {
+    "five": {
+      "no": "yes",
+      "yes": "no"
+    },
+    "no": "yes",
+    "yes": "yes"
+  },
+  "four": 4,
+  "one": 1,
+  "three": 3,
+  "two": 2
+}
