@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 )
 
-// MarshalIndent is like json.MarshalIndent but correctly indents the resulting JSON.
+// Marshal is like json.MarshalIndent but does not escape HTML.
 // And does not return an error
-func MarshalIndent(v interface{}) string {
+func Marshal(v interface{}) []byte {
 	var b bytes.Buffer
 	e := json.NewEncoder(&b)
 	// Allows < and > in JSON strings without escaping which we do with SrcArrow and
@@ -18,9 +18,9 @@ func MarshalIndent(v interface{}) string {
 	err := e.Encode(v)
 	if err != nil {
 		buf, _ := json.Marshal(err.Error())
-		return string(buf)
+		return buf
 	}
 	buf := b.Bytes()
 	// Remove trailing newline.
-	return string(buf[:len(buf)-1])
+	return buf[:len(buf)-1]
 }

@@ -3,8 +3,6 @@ package assert_test
 import (
 	"testing"
 
-	"oss.terrastruct.com/util-go/xjson"
-
 	"oss.terrastruct.com/util-go/assert"
 )
 
@@ -49,7 +47,7 @@ func TestStringJSON(t *testing.T) {
 		t.Parallel()
 
 		m1, m2 := gen()
-		assert.StringJSON(t, xjson.MarshalIndent(m1), m2)
+		assert.JSON(t, m1, m2)
 	})
 
 	t.Run("diff", func(t *testing.T) {
@@ -77,7 +75,7 @@ func TestStringJSON(t *testing.T) {
 				t.Error("expected assert.StringJSON to fatal with correct diff")
 			}
 		}()
-		assert.StringJSON(ftb, xjson.MarshalIndent(m1), m2)
+		assert.JSON(ftb, m1, m2)
 	})
 }
 

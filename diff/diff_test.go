@@ -34,7 +34,7 @@ func TestTestData(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	err = diff.Testdata(filepath.Join("testdata", t.Name()), m1)
+	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Error(t, err)
 	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
 [1m--- /dev/null[m
@@ -72,7 +72,7 @@ func TestTestData(t *testing.T) {
 
 	m1["five"].(map[string]interface{})["five"].(map[string]interface{})["no"] = "ys"
 
-	err = diff.Testdata(filepath.Join("testdata", t.Name()), m1)
+	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	if err == nil {
 		t.Fatalf("expected err: %#v", err)
 	}
@@ -111,13 +111,13 @@ func testTestDataAccept(t *testing.T) {
 	}
 
 	os.Setenv("TESTDATA_ACCEPT", "1")
-	err := diff.Testdata(filepath.Join("testdata", t.Name()), m1)
+	err := diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Success(t, err)
 
 	m1["one"] = 2
 
 	os.Setenv("TESTDATA_ACCEPT", "")
-	err = diff.Testdata(filepath.Join("testdata", t.Name()), m1)
+	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Error(t, err)
 	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
 [1m--- a/testdata/TestTestData/TESTDATA_ACCEPT.exp.json[m

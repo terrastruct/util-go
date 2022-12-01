@@ -35,12 +35,12 @@ func ErrorString(tb testing.TB, err error, msg string) {
 
 func JSON(tb testing.TB, exp, got interface{}) {
 	tb.Helper()
-	String(tb, xjson.MarshalIndent(exp), xjson.MarshalIndent(got))
+	String(tb, string(xjson.Marshal(exp)), string(xjson.Marshal(got)))
 }
 
 func StringJSON(tb testing.TB, exp string, got interface{}) {
 	tb.Helper()
-	String(tb, exp, xjson.MarshalIndent(got))
+	String(tb, exp, string(xjson.Marshal(got)))
 }
 
 func String(tb testing.TB, exp, got string) {
@@ -58,8 +58,13 @@ func Runes(tb testing.TB, exp, got string) {
 	Success(tb, err)
 }
 
-func Testdata(tb testing.TB, got interface{}) {
-	err := diff.Testdata(filepath.Join("testdata", tb.Name()), got)
+func TestdataJSON(tb testing.TB, got interface{}) {
+	err := diff.TestdataJSON(filepath.Join("testdata", tb.Name()), got)
+	Success(tb, err)
+}
+
+func Testdata(tb testing.TB, ext string, got []byte) {
+	err := diff.Testdata(filepath.Join("testdata", tb.Name()), ext, got)
 	Success(tb, err)
 }
 

@@ -32,7 +32,7 @@ func TestLogger(t *testing.T) {
 				testLogger(l)
 
 				t.Log(b.String())
-				assert.Testdata(t, b.String())
+				assert.TestdataJSON(t, b.String())
 			},
 		},
 		{
@@ -44,7 +44,7 @@ func TestLogger(t *testing.T) {
 				testLogger(l)
 
 				t.Log(b.String())
-				assert.Testdata(t, b.String())
+				assert.TestdataJSON(t, b.String())
 			},
 		},
 		{
@@ -75,7 +75,7 @@ func TestLogger(t *testing.T) {
 					t.Fatalf("failed to read log output: %v", err)
 				}
 				t.Log(len(out), string(out))
-				assert.Testdata(t, string(out))
+				assert.TestdataJSON(t, string(out))
 			},
 		},
 		{
@@ -112,7 +112,7 @@ func TestLogger(t *testing.T) {
 				testLogger(l2)
 
 				t.Log(b.String())
-				assert.Testdata(t, b.String())
+				assert.TestdataJSON(t, b.String())
 			},
 		},
 	}

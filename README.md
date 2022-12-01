@@ -22,7 +22,6 @@ own repo from this collection we will. Feel free to open an issue to request.
 - <a href="#xrand" id="toc-xrand">./xrand</a>
 - <a href="#xcontext" id="toc-xcontext">./xcontext</a>
 - <a href="#xjson" id="toc-xjson">./xjson</a>
-- <a href="#xfmt" id="toc-xfmt">./xfmt</a>
 
 ## Package Index
 

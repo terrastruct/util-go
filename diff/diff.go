@@ -3,7 +3,7 @@
 // - Strings
 // - Files
 // - Runes
-// - TestData
+// - Testdata
 package diff
 
 import (
@@ -137,11 +137,11 @@ func formatRunes(s string) string {
 	return strings.Join(strings.Split(fmt.Sprintf("%#v", []rune(s)), ", "), "\n")
 }
 
-// Testdata is for when you have JSON that is too large to easily keep embedded by the
+// TestdataJSON is for when you have JSON that is too large to easily keep embedded by the
 // tests in _test.go files. As well, it makes the acceptance of large changes trivial
 // unlike say fs/embed.
 //
-// Testdata encodes got as JSON and diffs it against the stored json in path.exp.json.
+// TestdataJSON encodes got as JSON and diffs it against the stored json in path.exp.json.
 // The got JSON is stored in path.got.json. If the diff is empty, it returns nil.
 //
 // Otherwise it returns an error containing the diff.
@@ -162,11 +162,11 @@ func formatRunes(s string) string {
 // You'll want to use -count=1 to disable go test's result caching if you do use
 // $TESTDATA_ACCEPT.
 //
-// Testdata will automatically create nonexistent directories in path.
+// TestdataJSON will automatically create nonexistent directories in path.
 //
 // Here's an example that you can play with to better understand the behaviour:
 //
-//     err = diff.Testdata(filepath.Join("testdata", t.Name()), "change me")
+//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), "change me")
 //     if err != nil {
 //     	t.Fatal(err)
 //     }
@@ -174,11 +174,11 @@ func formatRunes(s string) string {
 // Normally you want to use t.Name() as path for clarity but you can pass in any string.
 // e.g. a single test could persist two json objects into testdata with:
 //
-//     err = diff.Testdata(filepath.Join("testdata", t.Name(), "1"), "change me 1")
+//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "1"), "change me 1")
 //     if err != nil {
 //     	t.Fatal(err)
 //     }
-//     err = diff.Testdata(filepath.Join("testdata", t.Name(), "2"), "change me 2")
+//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "2"), "change me 2")
 //     if err != nil {
 //     	t.Fatal(err)
 //     }
@@ -190,19 +190,23 @@ func formatRunes(s string) string {
 // note: testdata is the canonical Go directory for such persistent test only files.
 //       It is unfortunately poorly documented. See https://pkg.go.dev/cmd/go/internal/test
 //       So normally you'd want path to be filepath.Join("testdata", t.Name()).
-//       This is also the reason this function is named "Testdata".
-func Testdata(path string, got interface{}) error {
-	expPath := fmt.Sprintf("%s.exp.json", path)
-	gotPath := fmt.Sprintf("%s.got.json", path)
+//       This is also the reason this function is named "TestdataJSON".
+func TestdataJSON(path string, got interface{}) error {
+	gotb := xjson.Marshal(got)
+	gotb = append(gotb, '\n')
+	return Testdata(path, ".json", gotb)
+}
 
-	gotJSON := xjson.MarshalIndent(got)
-	gotJSON += "\n"
+// ext includes period like path.Ext()
+func Testdata(path, ext string, got []byte) error {
+	expPath := fmt.Sprintf("%s.exp%s", path, ext)
+	gotPath := fmt.Sprintf("%s.got%s", path, ext)
 
 	err := os.MkdirAll(filepath.Dir(gotPath), 0755)
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(gotPath, []byte(gotJSON), 0600)
+	err = ioutil.WriteFile(gotPath, []byte(got), 0600)
 	if err != nil {
 		return err
 	}
