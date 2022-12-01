@@ -1,4 +1,4 @@
-module oss.terrastruct.com/utils-go
+module oss.terrastruct.com/util-go
 
 go 1.18
 

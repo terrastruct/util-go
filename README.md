@@ -1,12 +1,12 @@
-# utils-go
+# util-go
 
-[![godoc](https://pkg.go.dev/badge/oss.terrastruct.com/utils-go.svg)](https://pkg.go.dev/oss.terrastruct.com/utils-go)
-[![ci](https://github.com/terrastruct/utils-go/actions/workflows/ci.yml/badge.svg)](https://github.com/terrastruct/utils-go/actions/workflows/ci.yml)
-[![license](https://img.shields.io/github/license/terrastruct/utils-go?color=9cf)](./LICENSE)
+[![godoc](https://pkg.go.dev/badge/oss.terrastruct.com/util-go.svg)](https://pkg.go.dev/oss.terrastruct.com/util-go)
+[![ci](https://github.com/terrastruct/util-go/actions/workflows/ci.yml/badge.svg)](https://github.com/terrastruct/util-go/actions/workflows/ci.yml)
+[![license](https://img.shields.io/github/license/terrastruct/util-go?color=9cf)](./LICENSE)
 
 Terrastruct's general purpose go libraries.
 
-See https://pkg.go.dev/oss.terrastruct.com/utils-go for docs.
+See https://pkg.go.dev/oss.terrastruct.com/util-go for docs.
 
 If there's enough external demand for a single package to be split off into its
 own repo from this collection we will. Feel free to open an issue to request.

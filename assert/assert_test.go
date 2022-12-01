@@ -3,9 +3,9 @@ package assert_test
 import (
 	"testing"
 
-	"oss.terrastruct.com/utils-go/xjson"
+	"oss.terrastruct.com/util-go/xjson"
 
-	"oss.terrastruct.com/utils-go/assert"
+	"oss.terrastruct.com/util-go/assert"
 )
 
 func TestStringJSON(t *testing.T) {

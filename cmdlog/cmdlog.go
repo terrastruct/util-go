@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"oss.terrastruct.com/utils-go/xos"
-	"oss.terrastruct.com/utils-go/xterm"
+	"oss.terrastruct.com/util-go/xos"
+	"oss.terrastruct.com/util-go/xterm"
 )
 
 var timeNow = time.Now

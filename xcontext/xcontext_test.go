@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/xcontext"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/xcontext"
 )
 
 func TestWithoutCancel(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/term"
 
-	"oss.terrastruct.com/utils-go/xos"
+	"oss.terrastruct.com/util-go/xos"
 )
 
 // See https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_

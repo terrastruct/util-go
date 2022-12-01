@@ -17,9 +17,9 @@ import (
 	"strings"
 	"time"
 
-	"oss.terrastruct.com/utils-go/xdefer"
+	"oss.terrastruct.com/util-go/xdefer"
 
-	"oss.terrastruct.com/utils-go/xjson"
+	"oss.terrastruct.com/util-go/xjson"
 )
 
 // Strings diffs exp with got in a git style diff.

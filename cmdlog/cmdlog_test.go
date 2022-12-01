@@ -9,9 +9,9 @@ import (
 
 	"github.com/creack/pty"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/cmdlog"
-	"oss.terrastruct.com/utils-go/xos"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/cmdlog"
+	"oss.terrastruct.com/util-go/xos"
 )
 
 func TestLogger(t *testing.T) {

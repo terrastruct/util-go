@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/diff"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/diff"
 )
 
 func TestTestData(t *testing.T) {

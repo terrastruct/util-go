@@ -3,7 +3,7 @@ package xrand_test
 import (
 	"testing"
 
-	"oss.terrastruct.com/utils-go/xrand"
+	"oss.terrastruct.com/util-go/xrand"
 )
 
 func TestString(t *testing.T) {

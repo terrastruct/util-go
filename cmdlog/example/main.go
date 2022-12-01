@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"oss.terrastruct.com/utils-go/cmdlog"
-	"oss.terrastruct.com/utils-go/xos"
+	"oss.terrastruct.com/util-go/cmdlog"
+	"oss.terrastruct.com/util-go/xos"
 )
 
 func main() {

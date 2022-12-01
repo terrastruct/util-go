@@ -7,8 +7,8 @@ import (
 
 	"golang.org/x/xerrors"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/xdefer"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/xdefer"
 )
 
 func TestErrorf(t *testing.T) {
@@ -32,10 +32,10 @@ func TestErrorf(t *testing.T) {
 	}
 	exp := fmt.Sprintf(`second wrap []int{99, 3}:
   - first wrap:
-    oss.terrastruct.com/utils-go/xdefer_test.TestErrorf.func1
+    oss.terrastruct.com/util-go/xdefer_test.TestErrorf.func1
         %v:23
   - ola amigo:
-    oss.terrastruct.com/utils-go/xdefer_test.TestErrorf.func1
+    oss.terrastruct.com/util-go/xdefer_test.TestErrorf.func1
         %[1]v:20`,
 		fp,
 	)
@@ -62,10 +62,10 @@ func TestEmptyErrorf(t *testing.T) {
 	if !ok {
 		t.Fatal("runtime.Caller failed")
 	}
-	exp := fmt.Sprintf(`oss.terrastruct.com/utils-go/xdefer_test.TestEmptyErrorf.func1
+	exp := fmt.Sprintf(`oss.terrastruct.com/util-go/xdefer_test.TestEmptyErrorf.func1
         %v:55
   - ola amigo:
-    oss.terrastruct.com/utils-go/xdefer_test.TestEmptyErrorf.func1
+    oss.terrastruct.com/util-go/xdefer_test.TestEmptyErrorf.func1
         %[1]v:53`,
 		fp,
 	)
@@ -74,6 +74,6 @@ func TestEmptyErrorf(t *testing.T) {
 	assert.String(t, exp, got)
 
 	exp = err.Error()
-	got = "oss.terrastruct.com/utils-go/xdefer_test.TestEmptyErrorf.func1: ola amigo"
+	got = "oss.terrastruct.com/util-go/xdefer_test.TestEmptyErrorf.func1: ola amigo"
 	assert.String(t, exp, got)
 }

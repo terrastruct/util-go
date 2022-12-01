@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/xos"
-	"oss.terrastruct.com/utils-go/xterm"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/xos"
+	"oss.terrastruct.com/util-go/xterm"
 )
 
 func init() {

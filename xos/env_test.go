@@ -3,8 +3,8 @@ package xos_test
 import (
 	"testing"
 
-	"oss.terrastruct.com/utils-go/assert"
-	"oss.terrastruct.com/utils-go/xos"
+	"oss.terrastruct.com/util-go/assert"
+	"oss.terrastruct.com/util-go/xos"
 )
 
 func TestEnv(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"oss.terrastruct.com/utils-go/xjson"
+	"oss.terrastruct.com/util-go/xjson"
 
-	"oss.terrastruct.com/utils-go/diff"
+	"oss.terrastruct.com/util-go/diff"
 )
 
 func Success(tb testing.TB, err error) {
