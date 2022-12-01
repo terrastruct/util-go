@@ -2,7 +2,7 @@
 
 [![godoc](https://pkg.go.dev/badge/oss.terrastruct.com/utils-go.svg)](https://pkg.go.dev/oss.terrastruct.com/utils-go)
 [![ci](https://github.com/terrastruct/utils-go/actions/workflows/ci.yml/badge.svg)](https://github.com/terrastruct/utils-go/actions/workflows/ci.yml)
-[![license](https://img.shields.io/github/license/terrastruct/utils-go?color=9cf)](./LICENSE.txt)
+[![license](https://img.shields.io/github/license/terrastruct/utils-go?color=9cf)](./LICENSE)
 
 Terrastruct's general purpose go libraries.
 
