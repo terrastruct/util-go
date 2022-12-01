@@ -33,11 +33,6 @@ func ErrorString(tb testing.TB, err error, msg string) {
 	String(tb, msg, err.Error())
 }
 
-func JSON(tb testing.TB, exp, got interface{}) {
-	tb.Helper()
-	String(tb, string(xjson.Marshal(exp)), string(xjson.Marshal(got)))
-}
-
 func StringJSON(tb testing.TB, exp string, got interface{}) {
 	tb.Helper()
 	String(tb, exp, string(xjson.Marshal(got)))
@@ -46,6 +41,15 @@ func StringJSON(tb testing.TB, exp string, got interface{}) {
 func String(tb testing.TB, exp, got string) {
 	tb.Helper()
 	diff, err := diff.Strings(exp, got)
+	Success(tb, err)
+	if diff != "" {
+		tb.Fatalf("\n%s", diff)
+	}
+}
+
+func JSON(tb testing.TB, exp, got interface{}) {
+	tb.Helper()
+	diff, err := diff.JSON(exp, got)
 	Success(tb, err)
 	if diff != "" {
 		tb.Fatalf("\n%s", diff)

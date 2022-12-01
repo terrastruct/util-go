@@ -224,3 +224,7 @@ func Testdata(path, ext string, got []byte) error {
 	}
 	return os.Remove(gotPath)
 }
+
+func JSON(exp, got interface{}) (string, error) {
+	return Strings(string(xjson.Marshal(exp)), string(xjson.Marshal(got)))
+}
