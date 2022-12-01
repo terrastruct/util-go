@@ -23,6 +23,7 @@ own repo from this collection we will. Feel free to open an issue to request.
 - <a href="#xcontext" id="toc-xcontext">./xcontext</a>
 - <a href="#xjson" id="toc-xjson">./xjson</a>
 - <a href="#go2" id="toc-go2">./go2</a>
+- <a href="#xbrowser" id="toc-xbrowser">./xbrowser</a>
 
 ## Package Index
 
@@ -75,3 +76,7 @@ xjson implements basic JSON helpers.
 ### [./go2](./go2)
 
 go2 contains general utility helpers that should've been in Go. Maybe they'll be in Go 2.0.
+
+### [./xbrowser](./xbrowser)
+
+xbrowser enables opening a user's GUI browser to a URL.
