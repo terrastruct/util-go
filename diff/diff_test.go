@@ -9,8 +9,6 @@ import (
 	"oss.terrastruct.com/utils-go/diff"
 )
 
-//lint:file-ignore ST1018 ignore staticcheck string literal with Unicode control characters
-
 func TestTestData(t *testing.T) {
 	t.Run("TESTDATA_ACCEPT", testTestDataAccept)
 
