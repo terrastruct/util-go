@@ -2,7 +2,6 @@
 package cmdlog
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -109,14 +108,7 @@ type debugWriter struct {
 
 func (dw *debugWriter) debug() bool {
 	if atomic.LoadInt64(&dw.flag) == 0 {
-		debug, err := dw.env.Bool("DEBUG")
-		if err != nil {
-			os.Stderr.WriteString(fmt.Sprintf("cmdlog: %v", err))
-			return false
-		}
-		if debug == nil || !*debug {
-			return false
-		}
+		return dw.env.Debug()
 	}
 	return true
 }

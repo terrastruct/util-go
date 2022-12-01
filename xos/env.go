@@ -2,6 +2,7 @@ package xos
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -85,4 +86,16 @@ func (e *Env) HumanPath(fp string) string {
 		return filepath.Join("~", strings.TrimPrefix(fp, e.Getenv("HOME")))
 	}
 	return fp
+}
+
+func (e *Env) Debug() bool {
+	debug, err := e.Bool("DEBUG")
+	if err != nil {
+		os.Stderr.WriteString(fmt.Sprintf("env: %v", err))
+		return false
+	}
+	if debug == nil || !*debug {
+		return false
+	}
+	return true
 }
