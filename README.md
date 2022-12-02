@@ -12,9 +12,9 @@ If there's enough external demand for a single package to be split off into its
 own repo from this collection we will. Feel free to open an issue to request.
 
 <!-- toc -->
+- <a href="#diff" id="toc-diff">./diff</a>
 - <a href="#assert" id="toc-assert">./assert</a>
 - <a href="#xtesting" id="toc-xtesting">./xtesting</a>
-- <a href="#diff" id="toc-diff">./diff</a>
 - <a href="#xdefer" id="toc-xdefer">./xdefer</a>
 - <a href="#cmdlog" id="toc-cmdlog">./cmdlog</a>
 - <a href="#xterm" id="toc-xterm">./xterm</a>
