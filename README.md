@@ -35,17 +35,29 @@ garbage after the move to pkg.go.dev. It's nowhere near as clear and responsive 
 UI. If this feedback reaches the authors of pkg.go.dev, please revert the UI back to what
 it was with godoc.org.
 
+### [./diff](./diff)
+
+diff providers functions to diff strings, files and general Go values with git diff.
+
 ### [./assert](./assert)
 
-assert provides test assertion helpers.
+assert provides test assertion helpers. It integrates with [./diff](#diff) to display
+beautiful diffs.
+
+note: `TestdataJSON` is extremely useful.
 
 ### [./xtesting](./xtesting)
 
 xtesting provides non assertion testing helpers. Currently only `RunCases`.
 
-### [./diff](./diff)
+![example output](./diff/example.png)
 
-diff providers functions to diff strings, files and general Go values with git diff.
+- Strings
+- Files
+- Runes
+- JSON
+- Testdata
+- TestdataJSON
 
 ### [./xdefer](./xdefer)
 
@@ -54,6 +66,20 @@ xdefer annotates all errors returned from a function transparently.
 ### [./cmdlog](./cmdlog)
 
 cmdlog implements color leveled logging for command line tools.
+
+![example output](./cmdlog/example/example.png)
+
+`cmdlog` supports arbitrary randomly colored prefixes just like
+[terrastruct/ci](https://github.com/terrastruct/ci).
+
+Example is in [./cmdlog/example/main.go](./cmdlog/example/main.go).
+
+See [./cmdlog/cmdlog_test.go](./cmdlog/cmdlog_test.go) for further usage.
+
+You can log in tests with `NewTB`.
+
+- `$COLOR` is obeyed to force enable/disable colored output.
+- `$DEBUG` is obeyed to enable/disable debug logs.
 
 ### [./xterm](./xterm)
 

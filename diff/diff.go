@@ -3,7 +3,9 @@
 // - Strings
 // - Files
 // - Runes
+// - JSON
 // - Testdata
+// - TestdataJSON
 package diff
 
 import (
