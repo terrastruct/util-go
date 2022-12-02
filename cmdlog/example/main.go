@@ -31,4 +31,6 @@ func main() {
 
 	l.SetTS(false)
 	l.Error.Println("Nothing can be done in one trip.")
+	l.Error.Println(`Good day to let down old friends who need help.
+I believe in getting into hot water; it keeps you clean.`)
 }

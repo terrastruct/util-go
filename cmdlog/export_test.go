@@ -20,15 +20,23 @@ func init() {
 }
 
 func TestStdlog(t *testing.T) {
-	tsw, ok := log.Default().Writer().(*tsWriter)
+	pw, ok := log.Default().Writer().(prefixWriter)
 	if !ok {
 		t.Fatalf("unexpected log.Default().Writer(): %T", log.Default().Writer())
 	}
+	tsw, ok := pw.w.(*tsWriter)
+	if !ok {
+		t.Fatalf("unexpected pw.w: %T", pw.w)
+	}
 	b := &bytes.Buffer{}
+	ow := tsw.w
 	tsw.w = b
+	defer func() {
+		tsw.w = ow
+	}()
 
 	log.Print("testing stdlog")
-	exp := fmt.Sprintf("[01:01:01] %stesting stdlog\n",
+	exp := fmt.Sprintf("[01:01:01] %s testing stdlog\n",
 		xterm.Prefix(xos.NewEnv(os.Environ()), os.Stderr, xterm.Blue, "stdlog"),
 	)
 	assert.String(t, exp, b.String())

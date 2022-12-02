@@ -84,7 +84,7 @@ func Tput(env *xos.Env, w io.Writer, caps, s string) string {
 
 func Prefix(env *xos.Env, w io.Writer, caps, s string) string {
 	s = fmt.Sprintf("%s", s)
-	return Tput(env, w, caps, s) + ": "
+	return Tput(env, w, caps, s) + ":"
 }
 
 var crc64Table = crc64.MakeTable(crc64.ISO)

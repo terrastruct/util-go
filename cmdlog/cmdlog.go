@@ -2,6 +2,7 @@
 package cmdlog
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"os"
@@ -92,12 +93,37 @@ func New(env *xos.Env, w io.Writer) *Logger {
 }
 
 func (l *Logger) init(prefix string) {
-	l.NoLevel = log.New(l.tsw, prefix, 0)
-	l.Debug = log.New(l.dw, prefix+xterm.Prefix(l.env, l.w, "", "debug"), 0)
-	l.Success = log.New(l.tsw, prefix+xterm.Prefix(l.env, l.w, xterm.Green, "success"), 0)
-	l.Info = log.New(l.tsw, prefix+xterm.Prefix(l.env, l.w, xterm.Blue, "info"), 0)
-	l.Warn = log.New(l.tsw, prefix+xterm.Prefix(l.env, l.w, xterm.Yellow, "warn"), 0)
-	l.Error = log.New(l.tsw, prefix+xterm.Prefix(l.env, l.w, xterm.Red, "err"), 0)
+	l.NoLevel = log.New(prefixWriter{l.tsw, prefix}, "", 0)
+
+	if prefix != "" {
+		prefix += " "
+	}
+	l.Debug = log.New(prefixWriter{l.dw, prefix + xterm.Prefix(l.env, l.w, "", "debug")}, "", 0)
+	l.Success = log.New(prefixWriter{l.tsw, prefix + xterm.Prefix(l.env, l.w, xterm.Green, "success")}, "", 0)
+	l.Info = log.New(prefixWriter{l.tsw, prefix + xterm.Prefix(l.env, l.w, xterm.Blue, "info")}, "", 0)
+	l.Warn = log.New(prefixWriter{l.tsw, prefix + xterm.Prefix(l.env, l.w, xterm.Yellow, "warn")}, "", 0)
+	l.Error = log.New(prefixWriter{l.tsw, prefix + xterm.Prefix(l.env, l.w, xterm.Red, "err")}, "", 0)
+}
+
+type prefixWriter struct {
+	w      io.Writer
+	prefix string
+}
+
+func (pw prefixWriter) Write(p []byte) (int, error) {
+	lines := bytes.Split(p, []byte("\n"))
+	p2 := make([]byte, 0, (len(pw.prefix)+1)*len(lines)+len(p))
+
+	for _, l := range lines[:len(lines)-1] {
+		prefix := pw.prefix
+		if len(l) > 0 {
+			prefix += " "
+		}
+		p2 = append(p2, prefix...)
+		p2 = append(p2, l...)
+		p2 = append(p2, '\n')
+	}
+	return pw.w.Write(p2)
 }
 
 type debugWriter struct {
@@ -171,19 +197,24 @@ func (tbWriter) Fd() uintptr {
 }
 
 func (l *Logger) WithCCPrefix(s string) *Logger {
-	l2 := new(Logger)
-	*l2 = *l
-
-	prefix := l.NoLevel.Prefix() + xterm.CCPrefix(l.env, l.w, s)
-	l2.init(prefix)
-	return l2
+	return l.withPrefix(xterm.CCPrefix(l.env, l.w, s))
 }
 
 func (l *Logger) WithPrefix(caps, s string) *Logger {
+	return l.withPrefix(xterm.Prefix(l.env, l.w, caps, s))
+}
+
+func (l *Logger) withPrefix(s string) *Logger {
 	l2 := new(Logger)
 	*l2 = *l
 
-	prefix := l.NoLevel.Prefix() + xterm.Prefix(l.env, l.w, caps, s)
+	prefix := l.NoLevel.Writer().(prefixWriter).prefix
+	if len(s) > 0 {
+		if len(prefix) > 0 {
+			prefix += " "
+		}
+		prefix += s
+	}
 	l2.init(prefix)
 	return l2
 }

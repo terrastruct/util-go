@@ -2,6 +2,7 @@ package cmdlog_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"testing"
@@ -12,19 +13,16 @@ import (
 	"oss.terrastruct.com/util-go/assert"
 	"oss.terrastruct.com/util-go/cmdlog"
 	"oss.terrastruct.com/util-go/xos"
+	"oss.terrastruct.com/util-go/xtesting"
 )
 
 func TestLogger(t *testing.T) {
 	t.Parallel()
 
-	var testCases = []struct {
-		name string
-
-		run func(*testing.T, *xos.Env)
-	}{
+	var cases = []xtesting.Case{
 		{
-			name: "COLOR=1",
-			run: func(t *testing.T, env *xos.Env) {
+			Name: "COLOR=1",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				b := &bytes.Buffer{}
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
@@ -36,8 +34,8 @@ func TestLogger(t *testing.T) {
 			},
 		},
 		{
-			name: "COLOR=",
-			run: func(t *testing.T, env *xos.Env) {
+			Name: "COLOR=",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				b := &bytes.Buffer{}
 				l := cmdlog.New(env, b)
 
@@ -48,8 +46,8 @@ func TestLogger(t *testing.T) {
 			},
 		},
 		{
-			name: "tty",
-			run: func(t *testing.T, env *xos.Env) {
+			Name: "tty",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				ptmx, tty, err := pty.Open()
 				if err != nil {
 					t.Fatalf("failed to open pty: %v", err)
@@ -79,8 +77,8 @@ func TestLogger(t *testing.T) {
 			},
 		},
 		{
-			name: "testing.TB",
-			run: func(t *testing.T, env *xos.Env) {
+			Name: "testing.TB",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				ft := &fakeTB{
 					TB: t,
 					logf: func(f string, v ...interface{}) {
@@ -95,8 +93,8 @@ func TestLogger(t *testing.T) {
 			},
 		},
 		{
-			name: "WithPrefix",
-			run: func(t *testing.T, env *xos.Env) {
+			Name: "WithPrefix",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				b := &bytes.Buffer{}
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
@@ -115,16 +113,29 @@ func TestLogger(t *testing.T) {
 				assert.TestdataJSON(t, b.String())
 			},
 		},
+		{
+			Name: "multiline",
+			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+				b := &bytes.Buffer{}
+				env.Setenv("COLOR", "1")
+				l := cmdlog.New(env, b)
+
+				l2 := l.WithCCPrefix("lochness")
+				l2 = l2.WithCCPrefix("imgbundler")
+				l2 = l2.WithCCPrefix("cache")
+
+				l2.Warn.Print(``)
+				l2.Warn.Print("\n\n\n")
+				l2.Warn.Printf(`yes %d
+yes %d`, 3, 4)
+
+				t.Log(b.String())
+				assert.TestdataJSON(t, b.String())
+			},
+		},
 	}
 
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			env := xos.NewEnv(nil)
-			tc.run(t, env)
-		})
-	}
+	xtesting.RunCases(t, cases)
 }
 
 func testLogger(l *cmdlog.Logger) {

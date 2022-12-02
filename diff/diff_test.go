@@ -13,6 +13,7 @@ func TestTestData(t *testing.T) {
 	t.Run("TESTDATA_ACCEPT", testTestDataAccept)
 
 	os.Unsetenv("TESTDATA_ACCEPT")
+	os.Unsetenv("TA")
 
 	m1 := map[string]interface{}{
 		"one":   1,
@@ -36,7 +37,7 @@ func TestTestData(t *testing.T) {
 
 	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Error(t, err)
-	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
+	exp := `diff (rerun with $TESTDATA_ACCEPT=1 or $TA=1 to accept):
 [1m--- /dev/null[m
 [1m+++ b/testdata/TestTestData.got.json[m
 [36m@@ -0,0 +1,14 @@[m
@@ -76,7 +77,7 @@ func TestTestData(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected err: %#v", err)
 	}
-	exp = `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
+	exp = `diff (rerun with $TESTDATA_ACCEPT=1 or $TA=1 to accept):
 [1m--- a/testdata/TestTestData.exp.json[m
 [1m+++ b/testdata/TestTestData.got.json[m
 [36m@@ -1,7 +1,7 @@[m
@@ -111,15 +112,17 @@ func testTestDataAccept(t *testing.T) {
 	}
 
 	os.Setenv("TESTDATA_ACCEPT", "1")
+	os.Setenv("TA", "1")
 	err := diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Success(t, err)
 
 	m1["one"] = 2
 
 	os.Setenv("TESTDATA_ACCEPT", "")
+	os.Setenv("TA", "")
 	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), m1)
 	assert.Error(t, err)
-	exp := `diff (rerun with $TESTDATA_ACCEPT=1 to accept):
+	exp := `diff (rerun with $TESTDATA_ACCEPT=1 or $TA=1 to accept):
 [1m--- a/testdata/TestTestData/TESTDATA_ACCEPT.exp.json[m
 [1m+++ b/testdata/TestTestData/TESTDATA_ACCEPT.got.json[m
 [36m@@ -1,3 +1,3 @@[m
