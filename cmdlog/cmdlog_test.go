@@ -120,12 +120,18 @@ func TestLogger(t *testing.T) {
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
 
+				l.NoLevel.Print("")
+				l.SetTS(true)
+				l.NoLevel.Print("")
+				l.SetTS(false)
+
 				l2 := l.WithCCPrefix("lochness")
 				l2 = l2.WithCCPrefix("imgbundler")
 				l2 = l2.WithCCPrefix("cache")
 
 				l2.Warn.Print(``)
 				l2.Warn.Print("\n\n\n")
+				l2.SetTS(true)
 				l2.Warn.Printf(`yes %d
 yes %d`, 3, 4)
 
@@ -156,6 +162,8 @@ func testLogger(l *cmdlog.Logger) {
 
 	l.SetTS(false)
 	l.Error.Println("Nothing can be done in one trip.")
+	l.Error.Println(`Good day to let down old friends who need help.
+I believe in getting into hot water; it keeps you clean.`)
 }
 
 type fakeTB struct {

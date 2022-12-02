@@ -123,7 +123,12 @@ func (pw prefixWriter) Write(p []byte) (int, error) {
 		p2 = append(p2, l...)
 		p2 = append(p2, '\n')
 	}
-	return pw.w.Write(p2)
+
+	n, err := pw.w.Write(p2)
+	if n > len(p) {
+		n = len(p)
+	}
+	return n, err
 }
 
 type debugWriter struct {
@@ -165,17 +170,26 @@ func (tsw *tsWriter) Write(p []byte) (int, error) {
 	}
 
 	ts := timeNow().Format(tsfmt)
-	prefix := []byte("[" + ts + "] ")
-	p = append(prefix, p...)
-	n, err := tsw.w.Write(p)
-	if err != nil {
-		n -= len(prefix)
-		if n < 0 {
-			n = 0
+	prefix := []byte("[" + ts + "]")
+
+	lines := bytes.Split(p, []byte("\n"))
+	p2 := make([]byte, 0, (len(prefix)+1)*len(lines)+len(p))
+
+	for _, l := range lines[:len(lines)-1] {
+		prefix := prefix
+		if len(l) > 0 {
+			prefix = append(prefix, ' ')
 		}
-		return n, err
+		p2 = append(p2, prefix...)
+		p2 = append(p2, l...)
+		p2 = append(p2, '\n')
 	}
-	return len(p), nil
+
+	n, err := tsw.w.Write(p2)
+	if n > len(p) {
+		n = len(p)
+	}
+	return n, err
 }
 
 func NewTB(env *xos.Env, tb testing.TB) *Logger {
