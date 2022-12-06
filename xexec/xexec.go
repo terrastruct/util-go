@@ -5,16 +5,18 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
-// findExecutable is from package exec
+// findExecutable is from package os/exec
 func findExecutable(file string) error {
 	d, err := os.Stat(file)
 	if err != nil {
 		return err
 	}
-	if m := d.Mode(); !m.IsDir() && m&0111 != 0 {
+	m := d.Mode()
+	if !m.IsDir() && m&0111 != 0 {
 		return nil
 	}
 	return fs.ErrPermission
@@ -46,7 +48,14 @@ func SearchPath(prefix string) ([]string, error) {
 		for _, f := range files {
 			if strings.HasPrefix(f.Name(), prefix) {
 				match := filepath.Join(dir, f.Name())
-				if err := findExecutable(match); err == nil {
+				// Unideal but I don't want to maintain two separate implementations of this
+				// function like os/exec.
+				if runtime.GOOS == "windows" {
+					matches = append(matches, match)
+					continue
+				}
+				err = findExecutable(match)
+				if err == nil {
 					matches = append(matches, match)
 				}
 			}
