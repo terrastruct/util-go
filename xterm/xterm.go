@@ -7,8 +7,7 @@ import (
 	"math/rand"
 	"os"
 
-	// For Windows Cygwin/MSYS2 support over golang.org/x/term.
-	term "github.com/mattn/go-isatty"
+	"golang.org/x/term"
 
 	"oss.terrastruct.com/util-go/xos"
 )
@@ -56,7 +55,7 @@ func isTTY(w io.Writer) bool {
 	f, ok := w.(interface {
 		Fd() uintptr
 	})
-	return ok && term.IsTerminal(f.Fd())
+	return ok && term.IsTerminal(int(f.Fd()))
 }
 
 func shouldColor(env *xos.Env, w io.Writer) bool {
