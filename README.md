@@ -28,8 +28,6 @@ own repo from this collection we will. Feel free to open an issue to request.
 - <a href="#xhttp" id="toc-xhttp">./xhttp</a>
 - <a href="#xmain" id="toc-xmain">./xmain</a>
 
-## Package Index
-
 godoc is the canonical reference but we've provided this index as the godoc UI is frankly
 garbage after the move to pkg.go.dev. It's nowhere near as clear and responsive as the old
 UI. If this feedback reaches the authors of pkg.go.dev, please revert the UI back to what
