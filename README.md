@@ -2,6 +2,7 @@
 
 [![godoc](https://pkg.go.dev/badge/oss.terrastruct.com/util-go.svg)](https://pkg.go.dev/oss.terrastruct.com/util-go)
 [![ci](https://github.com/terrastruct/util-go/actions/workflows/ci.yml/badge.svg)](https://github.com/terrastruct/util-go/actions/workflows/ci.yml)
+[![daily](https://github.com/terrastruct/util-go/actions/workflows/daily.yml/badge.svg)](https://github.com/terrastruct/util-go/actions/workflows/daily.yml)
 [![license](https://img.shields.io/github/license/terrastruct/util-go?color=9cf)](./LICENSE)
 
 Terrastruct's general purpose go libraries.
