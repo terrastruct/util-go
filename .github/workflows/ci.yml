@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: git submodule update --init
-      - run: COLOR=1 ./ci/nofixups.sh
+      - run: COLOR=1 ./ci/bin/nofixups.sh
         env:
           GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
