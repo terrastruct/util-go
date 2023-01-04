@@ -15,7 +15,6 @@ own repo from this collection we will. Feel free to open an issue to request.
 <!-- toc -->
 - <a href="#diff" id="toc-diff">./diff</a>
 - <a href="#assert" id="toc-assert">./assert</a>
-- <a href="#xtesting" id="toc-xtesting">./xtesting</a>
 - <a href="#xdefer" id="toc-xdefer">./xdefer</a>
 - <a href="#cmdlog" id="toc-cmdlog">./cmdlog</a>
 - <a href="#xterm" id="toc-xterm">./xterm</a>
@@ -44,10 +43,6 @@ assert provides test assertion helpers. It integrates with [./diff](#diff) to di
 beautiful diffs.
 
 note: `TestdataJSON` is extremely useful.
-
-### [./xtesting](./xtesting)
-
-xtesting provides non assertion testing helpers. Currently only `RunCases`.
 
 ![example output](./diff/example.png)
 

@@ -13,7 +13,6 @@ import (
 	"oss.terrastruct.com/util-go/assert"
 	"oss.terrastruct.com/util-go/cmdlog"
 	"oss.terrastruct.com/util-go/xos"
-	"oss.terrastruct.com/util-go/xtesting"
 )
 
 func TestLogger(t *testing.T) {
@@ -144,18 +143,19 @@ yes %d`, 3, 4)
 		},
 	}
 
-	var xtca []xtesting.Case
+	ctx := context.Background()
 	for _, tc := range tca {
 		tc := tc
-		xtca = append(xtca, xtesting.Case{
-			Name: tc.name,
-			Run: func(t *testing.T, ctx context.Context) {
-				env := xos.NewEnv(nil)
-				tc.run(t, ctx, env)
-			},
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(ctx)
+			defer cancel()
+
+			env := xos.NewEnv(nil)
+			tc.run(t, ctx, env)
 		})
 	}
-	xtesting.RunCases(t, context.Background(), xtca)
 }
 
 func testLogger(l *cmdlog.Logger) {
