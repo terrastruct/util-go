@@ -3,26 +3,22 @@ package xtesting
 import (
 	"context"
 	"testing"
-
-	"oss.terrastruct.com/util-go/xos"
 )
 
 type Case struct {
 	Name string
 
-	Run func(t *testing.T, ctx context.Context, env *xos.Env)
+	Run func(t *testing.T, ctx context.Context)
 }
 
-func RunCases(t *testing.T, cases []Case) {
-	for _, tc := range cases {
+func RunCases(t *testing.T, ctx context.Context, tca []Case) {
+	for _, tc := range tca {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(ctx)
 			defer cancel()
 
-			env := xos.NewEnv(nil)
-
-			tc.Run(t, ctx, env)
+			tc.Run(t, ctx)
 		})
 	}
 }

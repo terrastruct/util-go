@@ -22,7 +22,8 @@ func TestLogger(t *testing.T) {
 	var cases = []xtesting.Case{
 		{
 			Name: "COLOR=1",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				b := &bytes.Buffer{}
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
@@ -35,7 +36,8 @@ func TestLogger(t *testing.T) {
 		},
 		{
 			Name: "COLOR=",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				b := &bytes.Buffer{}
 				l := cmdlog.New(env, b)
 
@@ -47,7 +49,8 @@ func TestLogger(t *testing.T) {
 		},
 		{
 			Name: "tty",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				ptmx, tty, err := pty.Open()
 				if err != nil {
 					t.Fatalf("failed to open pty: %v", err)
@@ -78,7 +81,8 @@ func TestLogger(t *testing.T) {
 		},
 		{
 			Name: "testing.TB",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				ft := &fakeTB{
 					TB: t,
 					logf: func(f string, v ...interface{}) {
@@ -94,7 +98,8 @@ func TestLogger(t *testing.T) {
 		},
 		{
 			Name: "WithPrefix",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				b := &bytes.Buffer{}
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
@@ -115,7 +120,8 @@ func TestLogger(t *testing.T) {
 		},
 		{
 			Name: "multiline",
-			Run: func(t *testing.T, ctx context.Context, env *xos.Env) {
+			Run: func(t *testing.T, ctx context.Context) {
+				env := xos.NewEnv(nil)
 				b := &bytes.Buffer{}
 				env.Setenv("COLOR", "1")
 				l := cmdlog.New(env, b)
@@ -141,7 +147,7 @@ yes %d`, 3, 4)
 		},
 	}
 
-	xtesting.RunCases(t, cases)
+	xtesting.RunCases(t, context.Background(), cases)
 }
 
 func testLogger(l *cmdlog.Logger) {
