@@ -63,18 +63,35 @@ func Runes(tb testing.TB, exp, got string) {
 }
 
 func TestdataJSON(tb testing.TB, got interface{}) {
+	tb.Helper()
 	err := diff.TestdataJSON(filepath.Join("testdata", tb.Name()), got)
 	Success(tb, err)
 }
 
 func Testdata(tb testing.TB, ext string, got []byte) {
+	tb.Helper()
 	err := diff.Testdata(filepath.Join("testdata", tb.Name()), ext, got)
 	Success(tb, err)
 }
 
-func Close(t *testing.T, c io.Closer) {
+func Close(tb testing.TB, c io.Closer) {
+	tb.Helper()
 	err := c.Close()
 	if err != nil {
-		t.Fatalf("failed to close %T: %v", c, err)
+		tb.Fatalf("failed to close %T: %v", c, err)
+	}
+}
+
+func Equal(tb testing.TB, exp, got interface{}) {
+	tb.Helper()
+	if exp != got {
+		tb.Fatalf("expected %[1]p %#[1]v but got %[2]p %#[2]v", exp, got)
+	}
+}
+
+func NotEqual(tb testing.TB, v1, v2 interface{}) {
+	tb.Helper()
+	if v1 == v2 {
+		tb.Fatalf("did not expect %[1]p %#[1]v", v2)
 	}
 }
