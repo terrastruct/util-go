@@ -4,11 +4,11 @@ package assert
 import (
 	"io"
 	"path/filepath"
+	"reflect"
 	"testing"
 
-	"oss.terrastruct.com/util-go/xjson"
-
 	"oss.terrastruct.com/util-go/diff"
+	"oss.terrastruct.com/util-go/xjson"
 )
 
 func Success(tb testing.TB, err error) {
@@ -84,14 +84,24 @@ func Close(tb testing.TB, c io.Closer) {
 
 func Equal(tb testing.TB, exp, got interface{}) {
 	tb.Helper()
-	if exp != got {
+	if exp == got {
+		return
+	}
+	if reflect.TypeOf(exp).Kind() == reflect.Pointer {
 		tb.Fatalf("expected %[1]p %#[1]v but got %[2]p %#[2]v", exp, got)
+	} else {
+		tb.Fatalf("expected %#v but got %#v", exp, got)
 	}
 }
 
 func NotEqual(tb testing.TB, v1, v2 interface{}) {
 	tb.Helper()
-	if v1 == v2 {
+	if v1 != v2 {
+		return
+	}
+	if reflect.TypeOf(v1).Kind() == reflect.Pointer {
 		tb.Fatalf("did not expect %[1]p %#[1]v", v2)
+	} else {
+		tb.Fatalf("did not expect %#v", v2)
 	}
 }
