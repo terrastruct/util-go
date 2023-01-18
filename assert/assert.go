@@ -87,7 +87,8 @@ func Equal(tb testing.TB, exp, got interface{}) {
 	if exp == got {
 		return
 	}
-	if reflect.TypeOf(exp).Kind() == reflect.Pointer {
+	typ := reflect.TypeOf(exp)
+	if typ != nil && typ.Kind() == reflect.Pointer {
 		tb.Fatalf("expected %[1]p %#[1]v but got %[2]p %#[2]v", exp, got)
 	} else {
 		tb.Fatalf("expected %#v but got %#v", exp, got)
@@ -99,7 +100,8 @@ func NotEqual(tb testing.TB, v1, v2 interface{}) {
 	if v1 != v2 {
 		return
 	}
-	if reflect.TypeOf(v1).Kind() == reflect.Pointer {
+	typ := reflect.TypeOf(v1)
+	if typ != nil && typ.Kind() == reflect.Pointer {
 		tb.Fatalf("did not expect %[1]p %#[1]v", v2)
 	} else {
 		tb.Fatalf("did not expect %#v", v2)
