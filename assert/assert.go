@@ -4,7 +4,6 @@ package assert
 import (
 	"io"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"oss.terrastruct.com/util-go/diff"
@@ -87,12 +86,15 @@ func Equal(tb testing.TB, exp, got interface{}) {
 	if exp == got {
 		return
 	}
-	typ := reflect.TypeOf(exp)
-	if typ != nil && typ.Kind() == reflect.Pointer {
-		tb.Fatalf("expected %[1]p %#[1]v but got %[2]p %#[2]v", exp, got)
-	} else {
-		tb.Fatalf("expected %#v but got %#v", exp, got)
+	exps, ok := exp.(string)
+	if ok {
+		gots, ok := got.(string)
+		if ok {
+			String(tb, exps, gots)
+			return
+		}
 	}
+	tb.Fatalf("expected %#v but got %#v", exp, got)
 }
 
 func NotEqual(tb testing.TB, v1, v2 interface{}) {
@@ -100,10 +102,5 @@ func NotEqual(tb testing.TB, v1, v2 interface{}) {
 	if v1 != v2 {
 		return
 	}
-	typ := reflect.TypeOf(v1)
-	if typ != nil && typ.Kind() == reflect.Pointer {
-		tb.Fatalf("did not expect %[1]p %#[1]v", v2)
-	} else {
-		tb.Fatalf("did not expect %#v", v2)
-	}
+	tb.Fatalf("did not expect %#v", v2)
 }
