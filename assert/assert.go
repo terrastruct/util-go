@@ -104,3 +104,13 @@ func NotEqual(tb testing.TB, v1, v2 interface{}) {
 	}
 	tb.Fatalf("did not expect %#v", v2)
 }
+
+func True(tb testing.TB, v bool) {
+	tb.Helper()
+	Equal(tb, true, v)
+}
+
+func False(tb testing.TB, v bool) {
+	tb.Helper()
+	Equal(tb, false, v)
+}

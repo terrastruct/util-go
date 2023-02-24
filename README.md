@@ -13,20 +13,20 @@ If there's enough external demand for a single package to be split off into its
 own repo from this collection we will. Feel free to open an issue to request.
 
 <!-- toc -->
-- <a href="#diff" id="toc-diff">./diff</a>
-- <a href="#assert" id="toc-assert">./assert</a>
-- <a href="#xdefer" id="toc-xdefer">./xdefer</a>
-- <a href="#cmdlog" id="toc-cmdlog">./cmdlog</a>
-- <a href="#xterm" id="toc-xterm">./xterm</a>
-- <a href="#xos" id="toc-xos">./xos</a>
-- <a href="#xrand" id="toc-xrand">./xrand</a>
-- <a href="#xcontext" id="toc-xcontext">./xcontext</a>
-- <a href="#xjson" id="toc-xjson">./xjson</a>
-- <a href="#go2" id="toc-go2">./go2</a>
-- <a href="#xbrowser" id="toc-xbrowser">./xbrowser</a>
-- <a href="#xexec" id="toc-xexec">./xexec</a>
-- <a href="#xhttp" id="toc-xhttp">./xhttp</a>
-- <a href="#xmain" id="toc-xmain">./xmain</a>
+- [./diff](#diff)
+- [./assert](#assert)
+- [./xdefer](#xdefer)
+- [./cmdlog](#cmdlog)
+- [./xterm](#xterm)
+- [./xos](#xos)
+- [./xrand](#xrand)
+- [./xcontext](#xcontext)
+- [./xjson](#xjson)
+- [./go2](#go2)
+- [./xbrowser](#xbrowser)
+- [./xexec](#xexec)
+- [./xhttp](#xhttp)
+- [./xmain](#xmain)
 
 godoc is the canonical reference but we've provided this index as the godoc UI is frankly
 garbage after the move to pkg.go.dev. It's nowhere near as clear and responsive as the old
