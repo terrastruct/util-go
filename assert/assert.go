@@ -116,7 +116,7 @@ func False(tb testing.TB, v bool) {
 	Equal(tb, false, v)
 }
 
-func TempDir(tb testing.TB) (dir string, done func()) {
+func TempDir(tb testing.TB) (dir string, cleanup func()) {
 	tb.Helper()
 
 	dir, err := os.MkdirTemp("", "util-go.assert.TempDir")
