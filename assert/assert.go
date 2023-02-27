@@ -3,6 +3,7 @@ package assert
 
 import (
 	"io"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -113,4 +114,16 @@ func True(tb testing.TB, v bool) {
 func False(tb testing.TB, v bool) {
 	tb.Helper()
 	Equal(tb, false, v)
+}
+
+func TempDir(tb testing.TB) (dir string, done func()) {
+	tb.Helper()
+
+	dir, err := os.MkdirTemp("", "util-go.assert.TempDir")
+	Success(tb, err)
+	return dir, func() {
+		tb.Helper()
+		err = os.RemoveAll(dir)
+		Success(tb, err)
+	}
 }
