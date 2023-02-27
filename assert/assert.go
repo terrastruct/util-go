@@ -127,3 +127,10 @@ func TempDir(tb testing.TB) (dir string, cleanup func()) {
 		Success(tb, err)
 	}
 }
+
+func WriteFile(tb testing.TB, fp, data []byte, perms os.FileMode) () {
+	tb.Helper()
+
+	err := os.WriteFile(fp, data, perms)
+	Success(tb, err)
+}
