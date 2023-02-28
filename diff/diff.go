@@ -223,7 +223,7 @@ func Testdata(path, ext string, got []byte) error {
 			return os.Rename(gotPath, expPath)
 		}
 		if os.Getenv("NO_DIFF") != "" {
-			ds = "diff hidden with NO_DIFF=1"
+			ds = "diff hidden with $NO_DIFF=1"
 		}
 		return fmt.Errorf("diff (rerun with $TESTDATA_ACCEPT=1 or $TA=1 to accept):\n%s", ds)
 	}
