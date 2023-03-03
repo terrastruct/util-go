@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
@@ -25,8 +26,8 @@ type TestingState struct {
 	FS   fs.FS
 
 	Stdin  io.Reader
-	Stdout io.WriteCloser
-	Stderr io.WriteCloser
+	Stdout io.Writer
+	Stderr io.Writer
 
 	mu      *xcontext.Mutex
 	ms      *State
@@ -66,9 +67,9 @@ func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
 
 	name := ""
 	args := []string(nil)
-	if len(args) > 0 {
-		name = os.Args[0]
-		args = os.Args[1:]
+	if len(ts.Args) > 0 {
+		name = ts.Args[0]
+		args = ts.Args[1:]
 	}
 	log := cmdlog.NewTB(ts.Env, tb)
 	ts.ms = &State{
@@ -81,17 +82,42 @@ func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
 		FS:   ts.FS,
 	}
 
-	ts.ms.Stdin = ts.Stdin
 	if ts.Stdin == nil {
 		ts.ms.Stdin = io.LimitReader(nil, 0)
+	} else if rc, ok := ts.Stdin.(io.ReadCloser); ok {
+		ts.ms.Stdin = rc
+	} else {
+		var pw io.Writer
+		ts.ms.Stdin, pw = io.Pipe()
+		go io.Copy(pw, ts.Stdin)
 	}
-	ts.ms.Stdout = ts.Stdout
+
+	var pipeWG sync.WaitGroup
 	if ts.Stdout == nil {
 		ts.ms.Stdout = nopWriterCloser{io.Discard}
+	} else if wc, ok := ts.Stdout.(io.WriteCloser); ok {
+		ts.ms.Stdout = wc
+	} else {
+		var pr io.Reader
+		pr, ts.ms.Stdout = io.Pipe()
+		pipeWG.Add(1)
+		go func() {
+			defer pipeWG.Done()
+			io.Copy(ts.Stdout, pr)
+		}()
 	}
-	ts.ms.Stderr = ts.Stderr
 	if ts.Stderr == nil {
 		ts.ms.Stderr = nopWriterCloser{&prefixSuffixSaver{N: 1 << 25}}
+	} else if wc, ok := ts.Stderr.(io.WriteCloser); ok {
+		ts.ms.Stderr = wc
+	} else {
+		var pr io.Reader
+		pr, ts.ms.Stderr = io.Pipe()
+		pipeWG.Add(1)
+		go func() {
+			defer pipeWG.Done()
+			io.Copy(ts.Stderr, pr)
+		}()
 	}
 
 	go func() {
@@ -99,9 +125,13 @@ func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
 		err := ts.ms.Main(ctx, ts.sigs, ts.Run)
 		if err != nil {
 			if ts.Stderr == nil {
-				err = fmt.Errorf("%w; stderr: %s", err, ts.ms.Stderr.(nopWriterCloser).Writer.(*prefixSuffixSaver).Bytes())
+				stderr := ts.ms.Stderr.(nopWriterCloser).Writer.(*prefixSuffixSaver).Bytes()
+				if len(stderr) > 0 {
+					err = fmt.Errorf("%w; stderr: %s", err, stderr)
+				}
 			}
 		}
+		pipeWG.Wait()
 		ts.done <- err
 	}()
 }
@@ -109,7 +139,7 @@ func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
 func (ts *TestingState) Cleanup(tb testing.TB) {
 	tb.Helper()
 
-	if rc, ok := ts.Stdin.(io.ReadCloser); ok {
+	if rc, ok := ts.ms.Stdin.(io.ReadCloser); ok {
 		err := rc.Close()
 		if err != nil {
 			tb.Errorf("failed to close stdin: %v", err)
