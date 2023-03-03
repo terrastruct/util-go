@@ -26,7 +26,7 @@ func TestTesting(t *testing.T) {
 		{
 			name: "base",
 			run: func(t *testing.T, ctx context.Context, env *xos.Env) {
-				ts := &xmain.TestingState{
+				ts := &xmain.TestState{
 					Run:  helloWorldRun,
 					Env:  env,
 					Args: []string{"helloWorldRun"},
@@ -43,7 +43,7 @@ func TestTesting(t *testing.T) {
 			name: "help",
 			run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				stdout := &strings.Builder{}
-				ts := &xmain.TestingState{
+				ts := &xmain.TestState{
 					Run:    helloWorldRun,
 					Env:    env,
 					Args:   []string{"helloWorldRun", "-help"},
@@ -68,7 +68,7 @@ helloWorldRun prints the value of -flag to stdout. $HELLO_FLAG is equivalent to 
 			run: func(t *testing.T, ctx context.Context, env *xos.Env) {
 				env.Setenv("HELLO_FLAG", "world")
 				stdout := &strings.Builder{}
-				ts := &xmain.TestingState{
+				ts := &xmain.TestState{
 					Run:    helloWorldRun,
 					Env:    env,
 					Args:   []string{"helloWorldRun", "hello"},

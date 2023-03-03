@@ -18,7 +18,7 @@ import (
 	"oss.terrastruct.com/util-go/xos"
 )
 
-type TestingState struct {
+type TestState struct {
 	Run  func(context.Context, *State) error
 	Env  *xos.Env
 	Args []string
@@ -36,22 +36,22 @@ type TestingState struct {
 	doneErr *error
 }
 
-func (ts *TestingState) StdinPipe() (pw io.WriteCloser) {
+func (ts *TestState) StdinPipe() (pw io.WriteCloser) {
 	ts.Stdin, pw = io.Pipe()
 	return pw
 }
 
-func (ts *TestingState) StdoutPipe() (pr io.Reader) {
+func (ts *TestState) StdoutPipe() (pr io.Reader) {
 	pr, ts.Stdout = io.Pipe()
 	return pr
 }
 
-func (ts *TestingState) StderrPipe() (pr io.Reader) {
+func (ts *TestState) StderrPipe() (pr io.Reader) {
 	pr, ts.Stderr = io.Pipe()
 	return pr
 }
 
-func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
+func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	tb.Helper()
 
 	if ts.mu != nil {
@@ -136,7 +136,7 @@ func (ts *TestingState) Start(tb testing.TB, ctx context.Context) {
 	}()
 }
 
-func (ts *TestingState) Cleanup(tb testing.TB) {
+func (ts *TestState) Cleanup(tb testing.TB) {
 	tb.Helper()
 
 	if rc, ok := ts.ms.Stdin.(io.ReadCloser); ok {
@@ -171,7 +171,7 @@ func (ts *TestingState) Cleanup(tb testing.TB) {
 	assert.Success(tb, err)
 }
 
-func (ts *TestingState) Signal(ctx context.Context, sig os.Signal) (err error) {
+func (ts *TestState) Signal(ctx context.Context, sig os.Signal) (err error) {
 	defer xdefer.Errorf(&err, "failed to signal testing xmain: %v", ts.ms.Name)
 
 	err = ts.mu.Lock(ctx)
@@ -195,7 +195,7 @@ func (ts *TestingState) Signal(ctx context.Context, sig os.Signal) (err error) {
 	}
 }
 
-func (ts *TestingState) Wait(ctx context.Context) (err error) {
+func (ts *TestState) Wait(ctx context.Context) (err error) {
 	defer xdefer.Errorf(&err, "failed to wait testing xmain: %v", ts.ms.Name)
 
 	err = ts.mu.Lock(ctx)
@@ -220,7 +220,7 @@ func (ts *TestingState) Wait(ctx context.Context) (err error) {
 	}
 }
 
-func (ts *TestingState) ExitError() (error, bool) {
+func (ts *TestState) ExitError() (error, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
