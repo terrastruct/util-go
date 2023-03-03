@@ -77,15 +77,15 @@ func Testdata(tb testing.TB, ext string, got []byte) {
 
 func TestdataDir(tb testing.TB, dir string) {
 	tb.Helper()
-
 	testdataDir(tb, filepath.Join("testdata", tb.Name()), dir)
-
 	if tb.Failed() {
 		tb.FailNow()
 	}
 }
 
 func testdataDir(tb testing.TB, testName, dir string) {
+	tb.Helper()
+
 	ea, err := os.ReadDir(dir)
 	Success(tb, err)
 
@@ -171,4 +171,18 @@ func ReadFile(tb testing.TB, fp string) (data []byte) {
 	data, err := os.ReadFile(fp)
 	Success(tb, err)
 	return data
+}
+
+func Remove(tb testing.TB, fp string) {
+	tb.Helper()
+
+	err := os.Remove(fp)
+	Success(tb, err)
+}
+
+func RemoveAll(tb testing.TB, fp string) {
+	tb.Helper()
+
+	err := os.RemoveAll(fp)
+	Success(tb, err)
 }
