@@ -94,9 +94,6 @@ type State struct {
 }
 
 func (ms *State) Main(ctx context.Context, sigs <-chan os.Signal, run func(context.Context, *State) error) error {
-	defer ms.Stdout.Close()
-	defer ms.Stderr.Close()
-
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

@@ -122,6 +122,8 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	go func() {
 		var err error
 		defer func() {
+			ts.ms.Stdout.Close()
+			ts.ms.Stderr.Close()
 			pipeWG.Wait()
 			if tempDirCleanup != nil {
 				tempDirCleanup()
