@@ -12,7 +12,6 @@ import (
 
 	"oss.terrastruct.com/util-go/assert"
 	"oss.terrastruct.com/util-go/cmdlog"
-	"oss.terrastruct.com/util-go/xcontext"
 	"oss.terrastruct.com/util-go/xdefer"
 	"oss.terrastruct.com/util-go/xos"
 )
@@ -27,10 +26,9 @@ type TestState struct {
 	Stdout io.Writer
 	Stderr io.Writer
 
-	mu      *xcontext.Mutex
 	ms      *State
 	sigs    chan os.Signal
-	done    chan error
+	done    chan struct{}
 	doneErr *error
 }
 
@@ -52,8 +50,8 @@ func (ts *TestState) StderrPipe() (pr io.Reader) {
 func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	tb.Helper()
 
-	if ts.mu != nil {
-		tb.Fatal("xmain.TestingState.Start cannot be called twice")
+	if ts.done != nil {
+		tb.Fatal("xmain.TestState.Start cannot be called twice")
 	}
 
 	if ts.Env == nil {
@@ -64,9 +62,8 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 		ts.PWD, tempDirCleanup = assert.TempDir(tb)
 	}
 
-	ts.mu = xcontext.NewMutex()
 	ts.sigs = make(chan os.Signal, 1)
-	ts.done = make(chan error, 1)
+	ts.done = make(chan struct{})
 
 	name := ""
 	args := []string(nil)
@@ -123,11 +120,17 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	}
 
 	go func() {
-		if tempDirCleanup != nil {
-			defer tempDirCleanup()
-		}
-		defer ts.Cleanup(tb)
-		err := ts.ms.Main(ctx, ts.sigs, ts.Run)
+		var err error
+		defer func() {
+			pipeWG.Wait()
+			if tempDirCleanup != nil {
+				tempDirCleanup()
+			}
+			ts.doneErr = &err
+			close(ts.done)
+			ts.cleanup(tb)
+		}()
+		err = ts.ms.Main(ctx, ts.sigs, ts.Run)
 		if err != nil {
 			if ts.Stderr == nil {
 				stderr := ts.ms.Stderr.(nopWriterCloser).Writer.(*prefixSuffixSaver).Bytes()
@@ -136,38 +139,42 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 				}
 			}
 		}
-		pipeWG.Wait()
-		ts.done <- err
 	}()
+}
+
+func (ts *TestState) cleanup(tb testing.TB) {
+	tb.Helper()
+	if rc, ok := ts.ms.Stdin.(io.ReadCloser); ok {
+		err := rc.Close()
+		if err != nil {
+			tb.Errorf("failed to close xmain test stdin: %v", err)
+		}
+	}
 }
 
 func (ts *TestState) Cleanup(tb testing.TB) {
 	tb.Helper()
 
-	if rc, ok := ts.ms.Stdin.(io.ReadCloser); ok {
-		err := rc.Close()
-		if err != nil {
-			tb.Errorf("failed to close stdin: %v", err)
-		}
-	}
+	ts.cleanup(tb)
 
-	err, ok := ts.ExitError()
-	if ok {
+	select {
+	case <-ts.done:
 		// Already exited.
 		return
+	default:
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-	err = ts.Signal(ctx, os.Interrupt)
+	err := ts.Signal(ctx, os.Interrupt)
 	if err != nil {
-		tb.Errorf("failed to os.Interrupt testing xmain: %v", err)
+		tb.Errorf("failed to os.Interrupt xmain test: %v", err)
 	}
 	err = ts.Wait(ctx)
 	if errors.Is(err, context.DeadlineExceeded) {
 		err = ts.Signal(ctx, os.Kill)
 		if err != nil {
-			tb.Errorf("failed to kill testing xmain: %v", err)
+			tb.Errorf("failed to kill xmain test: %v", err)
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
@@ -177,68 +184,27 @@ func (ts *TestState) Cleanup(tb testing.TB) {
 }
 
 func (ts *TestState) Signal(ctx context.Context, sig os.Signal) (err error) {
-	defer xdefer.Errorf(&err, "failed to signal testing xmain: %v", ts.ms.Name)
-
-	err = ts.mu.Lock(ctx)
-	if err != nil {
-		return err
-	}
-	defer ts.mu.Unlock()
-
-	if ts.doneErr != nil {
-		return fmt.Errorf("testing xmain done: %w", *ts.doneErr)
-	}
+	defer xdefer.Errorf(&err, "failed to signal xmain test: %v", ts.ms.Name)
 
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case err := <-ts.done:
-		ts.doneErr = &err
-		return err
+	case <-ts.done:
+		return fmt.Errorf("xmain test exited: %w", *ts.doneErr)
 	case ts.sigs <- sig:
 		return nil
 	}
 }
 
 func (ts *TestState) Wait(ctx context.Context) (err error) {
-	defer xdefer.Errorf(&err, "failed to wait testing xmain: %v", ts.ms.Name)
-
-	err = ts.mu.Lock(ctx)
-	if err != nil {
-		return err
-	}
-	defer ts.mu.Unlock()
-
-	if ts.doneErr != nil {
-		if *ts.doneErr == nil {
-			return nil
-		}
-		return fmt.Errorf("testing xmain done: %w", *ts.doneErr)
-	}
+	defer xdefer.Errorf(&err, "failed to wait xmain test: %v", ts.ms.Name)
 
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case err := <-ts.done:
-		ts.doneErr = &err
-		return err
+	case <-ts.done:
+		return *ts.doneErr
 	}
-}
-
-func (ts *TestState) ExitError() (error, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	err := ts.mu.Lock(ctx)
-	if err != nil {
-		return nil, false
-	}
-	defer ts.mu.Unlock()
-
-	if ts.doneErr != nil {
-		return *ts.doneErr, true
-	}
-	return nil, false
 }
 
 type nopWriterCloser struct {

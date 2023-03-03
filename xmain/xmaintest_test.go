@@ -36,7 +36,7 @@ func TestTesting(t *testing.T) {
 				defer ts.Cleanup(t)
 
 				err := ts.Wait(ctx)
-				assert.ErrorString(t, err, `failed to wait testing xmain: helloWorldRun: bad usage: $HELLO_FLAG or -flag missing`)
+				assert.ErrorString(t, err, `failed to wait xmain test: helloWorldRun: bad usage: $HELLO_FLAG or -flag missing`)
 			},
 		},
 		{
