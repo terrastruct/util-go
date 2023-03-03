@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"os/signal"
 	"syscall"
@@ -35,8 +34,6 @@ func Main(run RunFunc) {
 		Stderr: os.Stderr,
 
 		Env: xos.NewEnv(os.Environ()),
-
-		FS: os.DirFS("/"),
 	}
 	ms.Log = cmdlog.New(ms.Env, os.Stderr)
 	ms.Opts = NewOpts(ms.Env, ms.Log, args)
@@ -45,7 +42,7 @@ func Main(run RunFunc) {
 	if err != nil {
 		ms.mainFatal(err)
 	}
-	ms.Dir = wd
+	ms.PWD = wd
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
@@ -93,8 +90,7 @@ type State struct {
 	Env  *xos.Env
 	Opts *Opts
 
-	Dir string
-	FS  fs.FS
+	PWD string
 }
 
 func (ms *State) Main(ctx context.Context, sigs <-chan os.Signal, run func(context.Context, *State) error) error {

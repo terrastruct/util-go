@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"sync"
 	"testing"
@@ -22,8 +21,7 @@ type TestState struct {
 	Run  func(context.Context, *State) error
 	Env  *xos.Env
 	Args []string
-	Dir  string
-	FS   fs.FS
+	PWD  string
 
 	Stdin  io.Reader
 	Stdout io.Writer
@@ -57,8 +55,13 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	if ts.mu != nil {
 		tb.Fatal("xmain.TestingState.Start cannot be called twice")
 	}
+
 	if ts.Env == nil {
 		ts.Env = xos.NewEnv(nil)
+	}
+	var tempDirCleanup func()
+	if ts.PWD == "" {
+		ts.PWD, tempDirCleanup = assert.TempDir(tb)
 	}
 
 	ts.mu = xcontext.NewMutex()
@@ -78,8 +81,7 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 		Log:  log,
 		Env:  ts.Env,
 		Opts: NewOpts(ts.Env, log, args),
-		Dir:  ts.Dir,
-		FS:   ts.FS,
+		PWD:  ts.PWD,
 	}
 
 	if ts.Stdin == nil {
@@ -121,6 +123,9 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	}
 
 	go func() {
+		if tempDirCleanup != nil {
+			defer tempDirCleanup()
+		}
 		defer ts.Cleanup(tb)
 		err := ts.ms.Main(ctx, ts.sigs, ts.Run)
 		if err != nil {
