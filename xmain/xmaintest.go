@@ -86,9 +86,12 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	} else if rc, ok := ts.Stdin.(io.ReadCloser); ok {
 		ts.ms.Stdin = rc
 	} else {
-		var pw io.Writer
+		var pw io.WriteCloser
 		ts.ms.Stdin, pw = io.Pipe()
-		go io.Copy(pw, ts.Stdin)
+		go func() {
+			defer pw.Close()
+			io.Copy(pw, ts.Stdin)
+		}()
 	}
 
 	var pipeWG sync.WaitGroup
@@ -122,6 +125,7 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	go func() {
 		var err error
 		defer func() {
+			ts.closeStdin()
 			ts.ms.Stdout.Close()
 			ts.ms.Stderr.Close()
 			pipeWG.Wait()
@@ -130,7 +134,6 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 			}
 			ts.doneErr = &err
 			close(ts.done)
-			ts.cleanup(tb)
 		}()
 		err = ts.ms.Main(ctx, ts.sigs, ts.Run)
 		if err != nil {
@@ -144,20 +147,14 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 	}()
 }
 
-func (ts *TestState) cleanup(tb testing.TB) {
-	tb.Helper()
+func (ts *TestState) closeStdin() {
 	if rc, ok := ts.ms.Stdin.(io.ReadCloser); ok {
-		err := rc.Close()
-		if err != nil {
-			tb.Errorf("failed to close xmain test stdin: %v", err)
-		}
+		rc.Close()
 	}
 }
 
 func (ts *TestState) Cleanup(tb testing.TB) {
 	tb.Helper()
-
-	ts.cleanup(tb)
 
 	select {
 	case <-ts.done:
@@ -165,6 +162,8 @@ func (ts *TestState) Cleanup(tb testing.TB) {
 		return
 	default:
 	}
+
+	ts.closeStdin()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
