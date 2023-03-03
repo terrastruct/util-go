@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/signal"
 	"syscall"
@@ -34,39 +35,51 @@ func Main(run RunFunc) {
 		Stderr: os.Stderr,
 
 		Env: xos.NewEnv(os.Environ()),
+
+		FS: os.DirFS("/"),
 	}
 	ms.Log = cmdlog.New(ms.Env, os.Stderr)
 	ms.Opts = NewOpts(ms.Env, ms.Log, args)
 
+	wd, err := os.Getwd()
+	if err != nil {
+		ms.mainFatal(err)
+	}
+	ms.Dir = wd
+
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
 
-	err := ms.Main(context.Background(), sigs, run)
+	err = ms.Main(context.Background(), sigs, run)
 	if err != nil {
-		code := 1
-		msg := ""
-		usage := false
-
-		var eerr ExitError
-		var uerr UsageError
-		if errors.As(err, &eerr) {
-			code = eerr.Code
-			msg = eerr.Message
-		} else if errors.As(err, &uerr) {
-			msg = err.Error()
-			usage = true
-		} else {
-			msg = err.Error()
-		}
-
-		if msg != "" {
-			ms.Log.Error.Print(msg)
-			if usage {
-				ms.Log.Error.Print("Run with --help to see usage.")
-			}
-		}
-		os.Exit(code)
+		ms.mainFatal(err)
 	}
+}
+
+func (ms *State) mainFatal(err error) {
+	code := 1
+	msg := ""
+	usage := false
+
+	var eerr ExitError
+	var uerr UsageError
+	if errors.As(err, &eerr) {
+		code = eerr.Code
+		msg = eerr.Message
+	} else if errors.As(err, &uerr) {
+		msg = err.Error()
+		usage = true
+	} else {
+		msg = err.Error()
+	}
+
+	if msg != "" {
+		ms.Log.Error.Print(msg)
+		if usage {
+			ms.Log.Error.Print("Run with --help to see usage.")
+		}
+	}
+	os.Exit(code)
 }
 
 type State struct {
@@ -79,9 +92,15 @@ type State struct {
 	Log  *cmdlog.Logger
 	Env  *xos.Env
 	Opts *Opts
+
+	Dir string
+	FS  fs.FS
 }
 
 func (ms *State) Main(ctx context.Context, sigs <-chan os.Signal, run func(context.Context, *State) error) error {
+	defer ms.Stdout.Close()
+	defer ms.Stderr.Close()
+
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
