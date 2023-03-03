@@ -19,8 +19,9 @@ import (
 	"strings"
 	"time"
 
-	"oss.terrastruct.com/util-go/xdefer"
+	"go.uber.org/multierr"
 
+	"oss.terrastruct.com/util-go/xdefer"
 	"oss.terrastruct.com/util-go/xjson"
 )
 
@@ -232,4 +233,36 @@ func Testdata(path, ext string, got []byte) error {
 
 func JSON(exp, got interface{}) (string, error) {
 	return Strings(string(xjson.Marshal(exp)), string(xjson.Marshal(got)))
+}
+
+func TestdataDir(testName, dir string) (err error) {
+	defer xdefer.Errorf(&err, "failed to commit testdata dir %v", dir)
+	testdataDir(&err, testName, dir)
+	return err
+}
+
+func testdataDir(errs *error, testName, dir string) {
+	ea, err := os.ReadDir(dir)
+	if err != nil {
+		*errs = multierr.Combine(*errs, err)
+		return
+	}
+
+	for _, e := range ea {
+		if e.IsDir() {
+			testdataDir(errs, filepath.Join(testName, e.Name()), filepath.Join(dir, e.Name()))
+		} else {
+			ext := filepath.Ext(e.Name())
+			name := strings.TrimSuffix(e.Name(), ext)
+			got, err := os.ReadFile(filepath.Join(dir, e.Name()))
+			if err != nil {
+				*errs = multierr.Combine(*errs, err)
+				continue
+			}
+			err = Testdata(filepath.Join(testName, name), ext, got)
+			if err != nil {
+				*errs = multierr.Combine(*errs, err)
+			}
+		}
+	}
 }

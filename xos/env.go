@@ -99,3 +99,15 @@ func (e *Env) Debug() bool {
 	}
 	return true
 }
+
+func (e *Env) CI() bool {
+	ci, err := e.Bool("CI")
+	if err != nil {
+		os.Stderr.WriteString(fmt.Sprintf("env: %v", err))
+		return false
+	}
+	if ci == nil || !*ci {
+		return false
+	}
+	return true
+}

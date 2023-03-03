@@ -5,8 +5,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
+
+	"go.uber.org/multierr"
 
 	"oss.terrastruct.com/util-go/diff"
 	"oss.terrastruct.com/util-go/xjson"
@@ -77,30 +78,14 @@ func Testdata(tb testing.TB, ext string, got []byte) {
 
 func TestdataDir(tb testing.TB, dir string) {
 	tb.Helper()
-	testdataDir(tb, filepath.Join("testdata", tb.Name()), dir)
-	if tb.Failed() {
-		tb.FailNow()
-	}
-}
-
-func testdataDir(tb testing.TB, testName, dir string) {
-	tb.Helper()
-
-	ea, err := os.ReadDir(dir)
-	Success(tb, err)
-
-	for _, e := range ea {
-		if e.IsDir() {
-			testdataDir(tb, filepath.Join(testName, e.Name()), filepath.Join(dir, e.Name()))
-			continue
-		}
-		ext := filepath.Ext(e.Name())
-		name := strings.TrimSuffix(e.Name(), ext)
-		got := ReadFile(tb, filepath.Join(dir, e.Name()))
-		err := diff.Testdata(filepath.Join(testName, name), ext, got)
-		if err != nil {
+	err := diff.TestdataDir(filepath.Join("testdata", tb.Name()), dir)
+	if err != nil {
+		for _, err = range multierr.Errors(err) {
 			tb.Error(err)
 		}
+	}
+	if tb.Failed() {
+		tb.FailNow()
 	}
 }
 
