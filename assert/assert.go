@@ -134,3 +134,11 @@ func WriteFile(tb testing.TB, fp string, data []byte, perms os.FileMode) {
 	err := os.WriteFile(fp, data, perms)
 	Success(tb, err)
 }
+
+func ReadFile(tb testing.TB, fp string) (data []byte) {
+	tb.Helper()
+
+	data, err := os.ReadFile(fp)
+	Success(tb, err)
+	return data
+}
