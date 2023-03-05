@@ -198,12 +198,12 @@ func (ms *State) HumanPath(fp string) string {
 	}
 	fp = ms.AbsPath(fp)
 
-	if strings.HasPrefix(fp, os.Getenv("HOME")) {
-		fp = filepath.Join("~", strings.TrimPrefix(fp, os.Getenv("HOME")))
+	if strings.HasPrefix(fp, ms.Env.Getenv("HOME")) {
+		fp = filepath.Join("~", strings.TrimPrefix(fp, ms.Env.Getenv("HOME")))
 	}
 	pwd := ms.PWD
-	if strings.HasPrefix(pwd, os.Getenv("HOME")) {
-		pwd = filepath.Join("~", strings.TrimPrefix(pwd, os.Getenv("HOME")))
+	if strings.HasPrefix(pwd, ms.Env.Getenv("HOME")) {
+		pwd = filepath.Join("~", strings.TrimPrefix(pwd, ms.Env.Getenv("HOME")))
 	}
 
 	rel, err := filepath.Rel(pwd, fp)
