@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -181,8 +182,31 @@ func (ms *State) WritePath(fp string, p []byte) error {
 	return os.WriteFile(fp, p, 0644)
 }
 
-func (ms *State) RelPath(fp string) string {
-	rel, err := filepath.Rel(ms.PWD, fp)
+// AbsPath joins the PWD with fp to give the absolute path to fp.
+func (ms *State) AbsPath(fp string) string {
+	if fp == "-" || filepath.IsAbs(fp) {
+		return fp
+	}
+	return filepath.Join(ms.PWD, fp)
+}
+
+// HumanPath makes absolute path fp more suitable for human consumption
+// by replacing $HOME in fp with ~ and making it relative to the current PWD.
+func (ms *State) HumanPath(fp string) string {
+	if fp == "-" {
+		return fp
+	}
+	fp = ms.AbsPath(fp)
+
+	if strings.HasPrefix(fp, os.Getenv("HOME")) {
+		fp = filepath.Join("~", strings.TrimPrefix(fp, os.Getenv("HOME")))
+	}
+	pwd := ms.PWD
+	if strings.HasPrefix(pwd, os.Getenv("HOME")) {
+		pwd = filepath.Join("~", strings.TrimPrefix(pwd, os.Getenv("HOME")))
+	}
+
+	rel, err := filepath.Rel(pwd, fp)
 	if err != nil {
 		return fp
 	}
