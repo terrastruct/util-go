@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -178,4 +179,12 @@ func (ms *State) WritePath(fp string, p []byte) error {
 		return ms.Stdout.Close()
 	}
 	return os.WriteFile(fp, p, 0644)
+}
+
+func (ms *State) RelPath(fp string) string {
+	rel, err := filepath.Rel(ms.PWD, fp)
+	if err != nil {
+		return fp
+	}
+	return rel
 }
