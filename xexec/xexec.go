@@ -1,7 +1,6 @@
 package xexec
 
 import (
-	"errors"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -40,10 +39,7 @@ func SearchPath(prefix string) ([]string, error) {
 		dirSet[dir] = struct{}{}
 		files, err := os.ReadDir(dir)
 		if err != nil {
-			if errors.Is(err, fs.ErrNotExist) {
-				continue
-			}
-			return nil, err
+			continue
 		}
 		for _, f := range files {
 			if strings.HasPrefix(f.Name(), prefix) {
