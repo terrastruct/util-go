@@ -138,6 +138,22 @@ func (o *Opts) Int64(envKey, flag, shortFlag string, defaultVal int64, usage str
 	return o.Flags.Int64P(flag, shortFlag, defaultVal, usage), nil
 }
 
+func (o *Opts) Int64Slice(envKey, flag, shortFlag string, defaultVal []int64, usage string) (*[]int64, error) {
+	if env := o.getEnv(flag, envKey); env != "" {
+		split := strings.Split(env, ",")
+		defaultVal = make([]int64, len(split))
+		for i, part := range split {
+			val, err := strconv.ParseInt(strings.TrimSpace(part), 10, 64)
+			if err != nil {
+				return nil, UsageErrorf(`invalid environment variable %s. Expected []int64. Found "%v".`, envKey, env)
+			}
+			defaultVal[i] = val
+		}
+	}
+
+	return o.Flags.Int64SliceP(flag, shortFlag, defaultVal, usage), nil
+}
+
 func (o *Opts) String(envKey, flag, shortFlag string, defaultVal, usage string) *string {
 	if env := o.getEnv(flag, envKey); env != "" {
 		defaultVal = env
