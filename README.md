@@ -27,9 +27,7 @@ own repo from this collection we will. Feel free to open an issue to request.
 - [./xexec](#xexec)
 - [./xhttp](#xhttp)
 - [./xmain](#xmain)
-- [./tmpfs](#tmpfs)
-
-
+- [./mapfs](#mapfs)
 
 godoc is the canonical reference but we've provided this index as the godoc UI is frankly
 garbage after the move to pkg.go.dev. It's nowhere near as clear and responsive as the old
@@ -119,6 +117,6 @@ xhttp provides HTTP helpers.
 
 xmain implements helpers for building CLI tools.
 
-### [./tmpfs](./tmpfs)
+### [./mapfs](./mapfs)
 
-Package tmpfs takes in an memory description of a filesystem and writes it to a temp directory so that it may be used as an io/fs.FS.
+Package mapfs takes in a description of a filesystem as a `map[string]string` and writes it to a temp directory so that it may be used as an io/fs.FS.
