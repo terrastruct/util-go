@@ -1,6 +1,6 @@
-// Package tmpfs takes in an memory description of a filesystem
+// Package mapfs takes in a description of a filesystem as a map[string]string
 // and writes it to a temp directory so that it may be used as an io/fs.FS.
-package tmpfs
+package mapfs
 
 import (
 	"errors"
@@ -15,20 +15,20 @@ type FS struct {
 	fs.FS
 }
 
-func Make(m map[string]string) (*FS, error) {
-	tempDir, err := os.MkdirTemp("", "tmpfs-*")
+func New(m map[string]string) (*FS, error) {
+	tempDir, err := os.MkdirTemp("", "mapfs-*")
 	if err != nil {
-		return nil, fmt.Errorf("failed to create root tmpfs dir: %w", err)
+		return nil, fmt.Errorf("failed to create root mapfs dir: %w", err)
 	}
 	for p, s := range m {
 		p = path.Join(tempDir, p)
 		err = os.MkdirAll(path.Dir(p), 0755)
 		if err != nil {
-			return nil, fmt.Errorf("failed to create tmpfs dir %q: %w", path.Dir(p), err)
+			return nil, fmt.Errorf("failed to create mapfs dir %q: %w", path.Dir(p), err)
 		}
 		err = os.WriteFile(p, []byte(s), 0644)
 		if err != nil {
-			return nil, fmt.Errorf("failed to write tmpfs file %q: %w", p, err)
+			return nil, fmt.Errorf("failed to write mapfs file %q: %w", p, err)
 		}
 	}
 	return &FS{
@@ -43,7 +43,7 @@ func (fs *FS) Close() error {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf("failed to close tmpfs.FS: %w", err)
+		return fmt.Errorf("failed to close mapfs.FS: %w", err)
 	}
 	return nil
 }

@@ -1,14 +1,14 @@
-package tmpfs_test
+package mapfs_test
 
 import (
 	"io/fs"
 	"testing"
 
 	"oss.terrastruct.com/util-go/assert"
-	"oss.terrastruct.com/util-go/tmpfs"
+	"oss.terrastruct.com/util-go/mapfs"
 )
 
-func TestMemFS(t *testing.T) {
+func TestMapFS(t *testing.T) {
 	t.Parallel()
 
 	m := map[string]string{
@@ -18,21 +18,21 @@ func TestMemFS(t *testing.T) {
 		"nested/nested/nested/nested": "Yuppie Wannabes",
 	}
 
-	tmpfs, err := tmpfs.Make(m)
+	mapfs, err := mapfs.New(m)
 	assert.Success(t, err)
 	t.Cleanup(func() {
-		err := tmpfs.Close()
+		err := mapfs.Close()
 		assert.Success(t, err)
 	})
 
 	for p, s := range m {
-		b, err := fs.ReadFile(tmpfs, p)
+		b, err := fs.ReadFile(mapfs, p)
 		assert.Success(t, err)
 		assert.Equal(t, s, string(b))
 	}
 
-	_, err = fs.ReadFile(tmpfs, "../escape")
+	_, err = fs.ReadFile(mapfs, "../escape")
 	assert.ErrorString(t, err, "stat ../escape: invalid argument")
-	_, err = fs.ReadFile(tmpfs, "/root")
+	_, err = fs.ReadFile(mapfs, "/root")
 	assert.ErrorString(t, err, "stat /root: invalid argument")
 }
