@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"oss.terrastruct.com/util-go/cmdlog"
 	"oss.terrastruct.com/util-go/xos"
 )
 
@@ -17,12 +16,11 @@ type Opts struct {
 	Args  []string
 	Flags *pflag.FlagSet
 	env   *xos.Env
-	log   *cmdlog.Logger
 
 	flagEnv map[string]string
 }
 
-func NewOpts(env *xos.Env, log *cmdlog.Logger, args []string) *Opts {
+func NewOpts(env *xos.Env, args []string) *Opts {
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
 	flags.SortFlags = false
 	flags.Usage = func() {}
@@ -31,7 +29,6 @@ func NewOpts(env *xos.Env, log *cmdlog.Logger, args []string) *Opts {
 		Args:    args,
 		Flags:   flags,
 		env:     env,
-		log:     log,
 		flagEnv: make(map[string]string),
 	}
 }
