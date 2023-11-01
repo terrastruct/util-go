@@ -77,7 +77,7 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 
 		Log:  log,
 		Env:  ts.Env,
-		Opts: NewOpts(ts.Env, log, args),
+		Opts: NewOpts(ts.Env, args),
 		PWD:  ts.PWD,
 	}
 

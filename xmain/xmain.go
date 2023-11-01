@@ -38,7 +38,7 @@ func Main(run RunFunc) {
 		Env: xos.NewEnv(os.Environ()),
 	}
 	ms.Log = cmdlog.New(ms.Env, ms.Stderr)
-	ms.Opts = NewOpts(ms.Env, ms.Log, args)
+	ms.Opts = NewOpts(ms.Env, args)
 
 	wd, err := os.Getwd()
 	if err != nil {
