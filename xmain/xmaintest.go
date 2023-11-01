@@ -121,6 +121,7 @@ func (ts *TestState) Start(tb testing.TB, ctx context.Context) {
 			io.Copy(ts.Stderr, pr)
 		}()
 	}
+	ts.ms.Log = cmdlog.New(ts.ms.Env, ts.ms.Stderr)
 
 	go func() {
 		var err error
