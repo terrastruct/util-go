@@ -108,6 +108,7 @@ func (o *Opts) Defaults() string {
 		sidx1 := strings.Index(line, "\x00")
 		sidx2 := strings.Index(line, "\x01")
 		spacing1 := strings.Repeat(" ", maxlen-sidx1)
+		// println("\033[1;31m--- DEBUG:", (maxEnvLen-maxlen)-sidx2+sidx1, "\033[m")
 		spacing2 := strings.Repeat(" ", (maxEnvLen-maxlen)-sidx2+sidx1)
 		fmt.Fprintln(buf, line[:sidx1], spacing1, line[sidx1+1:sidx2], spacing2, wrap(maxEnvLen+3, 0, line[sidx2+1:]))
 	}
