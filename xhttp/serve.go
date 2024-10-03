@@ -65,26 +65,26 @@ func Serve(ctx context.Context, shutdownTimeout time.Duration, s *http.Server, l
 		return ctx
 	}
 
-  ss := newSafeServer(s)
+	ss := newSafeServer(s)
 
-  serverClosed := make(chan struct{})
-  var serverError error
-  go func() {
-    serverError = ss.ListenAndServe(l)
-    close(serverClosed)
-  }()
+	serverClosed := make(chan struct{})
+	var serverError error
+	go func() {
+		serverError = ss.ListenAndServe(l)
+		close(serverClosed)
+	}()
 
-  select {
-  case <-serverClosed:
-    return serverError
-  case <-ctx.Done():
-    shutdownCtx, cancel := context.WithTimeout(xcontext.WithoutCancel(ctx), shutdownTimeout)
-    defer cancel()
-    err := ss.Shutdown(shutdownCtx)
-    <-serverClosed // Wait for server to exit
-    if err != nil {
-      return err
-    }
-    return serverError
-  }
+	select {
+	case <-serverClosed:
+		return serverError
+	case <-ctx.Done():
+		shutdownCtx, cancel := context.WithTimeout(xcontext.WithoutCancel(ctx), shutdownTimeout)
+		defer cancel()
+		err := ss.Shutdown(shutdownCtx)
+		<-serverClosed // Wait for server to exit
+		if err != nil {
+			return err
+		}
+		return serverError
+	}
 }
