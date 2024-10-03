@@ -169,31 +169,32 @@ func formatRunes(s string) string {
 //
 // Here's an example that you can play with to better understand the behaviour:
 //
-//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), "change me")
-//     if err != nil {
-//     	t.Fatal(err)
-//     }
+//	err = diff.TestdataJSON(filepath.Join("testdata", t.Name()), "change me")
+//	if err != nil {
+//		t.Fatal(err)
+//	}
 //
 // Normally you want to use t.Name() as path for clarity but you can pass in any string.
 // e.g. a single test could persist two json objects into testdata with:
 //
-//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "1"), "change me 1")
-//     if err != nil {
-//     	t.Fatal(err)
-//     }
-//     err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "2"), "change me 2")
-//     if err != nil {
-//     	t.Fatal(err)
-//     }
+//	err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "1"), "change me 1")
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	err = diff.TestdataJSON(filepath.Join("testdata", t.Name(), "2"), "change me 2")
+//	if err != nil {
+//		t.Fatal(err)
+//	}
 //
 // These would persist in testdata/${t.Name()}/1.exp.json and testdata/${t.Name()}/2.exp.json
 //
 // It uses Files under the hood.
 //
 // note: testdata is the canonical Go directory for such persistent test only files.
-//       It is unfortunately poorly documented. See https://pkg.go.dev/cmd/go/internal/test
-//       So normally you'd want path to be filepath.Join("testdata", t.Name()).
-//       This is also the reason this function is named "TestdataJSON".
+//
+//	It is unfortunately poorly documented. See https://pkg.go.dev/cmd/go/internal/test
+//	So normally you'd want path to be filepath.Join("testdata", t.Name()).
+//	This is also the reason this function is named "TestdataJSON".
 func TestdataJSON(path string, got interface{}) error {
 	gotb := xjson.Marshal(got)
 	gotb = append(gotb, '\n')
