@@ -182,6 +182,39 @@ func (ms *State) WritePath(fp string, p []byte) error {
 	return os.WriteFile(fp, p, 0644)
 }
 
+func (ms *State) AtomicWritePath(fp string, p []byte) error {
+	if fp == "-" {
+		return ms.WritePath(fp, p)
+	}
+
+	dir := filepath.Dir(fp)
+	base := filepath.Base(fp)
+	tempFile, err := os.CreateTemp(dir, "tmp-"+base+"-")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		// Clean up temporary file if it still exists and there's an error
+		if err != nil {
+			os.Remove(tempFile.Name())
+		}
+	}()
+
+	if _, err = tempFile.Write(p); err != nil {
+		return err
+	}
+
+	if err = tempFile.Close(); err != nil {
+		return err
+	}
+
+	if err = os.Rename(tempFile.Name(), fp); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // AbsPath joins the PWD with fp to give the absolute path to fp.
 func (ms *State) AbsPath(fp string) string {
 	if fp == "-" || filepath.IsAbs(fp) {
