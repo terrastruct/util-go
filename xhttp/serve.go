@@ -35,10 +35,18 @@ func Serve(ctx context.Context, shutdownTimeout time.Duration, s *http.Server, l
 	select {
 	case err := <-done:
 		return err
+
 	case <-ctx.Done():
-		ctx = xcontext.WithoutCancel(ctx)
-		ctx, cancel := context.WithTimeout(ctx, shutdownTimeout)
+
+		shutdownCtx := xcontext.WithoutCancel(ctx)
+		shutdownCtx, cancel := context.WithTimeout(shutdownCtx, shutdownTimeout)
 		defer cancel()
-		return s.Shutdown(ctx)
+		shutdownErr := s.Shutdown(shutdownCtx)
+		serveErr := <-done
+		if serveErr != nil && serveErr != http.ErrServerClosed {
+			return serveErr
+		}
+		
+		return shutdownErr
 	}
 }
