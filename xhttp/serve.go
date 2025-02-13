@@ -44,7 +44,6 @@ func Serve(ctx context.Context, shutdownTimeout time.Duration, s *http.Server, l
 		if serveErr != nil && serveErr != http.ErrServerClosed {
 			return serveErr
 		}
-		
 		return shutdownErr
 	}
 }
